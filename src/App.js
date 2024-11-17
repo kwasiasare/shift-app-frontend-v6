@@ -51,7 +51,7 @@ const App = () => {
       const addedShift = await createShift(newShift);
       window.location.reload()
       // setShifts([...shifts, addedShift]);
-      resetForm();
+      //resetForm();
     } catch (error) {
       console.error("Error adding shift:", error);
     }
