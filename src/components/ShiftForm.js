@@ -26,7 +26,31 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
   // Populate form with current shift data if editing
   useEffect(() => {
     if (isEditing && currentShift) {
-      setShift(currentShift);
+      setShift({
+        location: currentShift.location || "",
+        date: currentShift.date || "",
+        start_time: currentShift.start_time || "",
+        end_time: currentShift.end_time || "",
+        map_staff: currentShift.map_staff || "No",
+        gender: currentShift.gender || "N/a",
+        message: currentShift.message || "",
+        coordinator: currentShift.coordinator || "",
+        assigned: currentShift.assigned || "",
+        status: currentShift.status || "",
+      });
+    } else {
+      setShift({
+        location: "",
+        date: "",
+        start_time: "",
+        end_time: "",
+        map_staff: "No",
+        gender: "N/a",
+        message: "",
+        coordinator: "",
+        assigned: "",
+        status: "",
+      });
     }
   }, [isEditing, currentShift]);
 
@@ -42,15 +66,17 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
     } else {
       onAddShift(shift);
     }
+    resetForm();
+  };
 
-    // Reset form fields after submission
+  const resetForm = () => {
     setShift({
       location: "",
       date: "",
       start_time: "",
       end_time: "",
-      map_staff: "",
-      gender: "",
+      map_staff: "No",
+      gender: "N/a",
       message: "",
       coordinator: "",
       assigned: "",
