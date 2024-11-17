@@ -49,22 +49,24 @@ const App = () => {
   const handleAddShift = async (newShift) => {
     try {
       const addedShift = await createShift(newShift);
-      setShifts([...shifts, addedShift]);
+      window.location.reload()
+      // setShifts([...shifts, addedShift]);
       resetForm();
     } catch (error) {
       console.error("Error adding shift:", error);
     }
   };
 
-  const handleEditShift = (index) => {
-    setCurrentShift(shifts[index]);
+  const handleEditShift = (shiftId) => {
+    const shiftToEdit = shifts.find(shift => shift._id === shiftId);
+    setCurrentShift(shiftToEdit);
     setIsEditing(true);
   };
 
   const handleUpdateShift = async (updatedShift) => {
     try {
       const updatedShiftData = await updateShift(
-        updatedShift.shiftId,
+        updatedShift._id,
         updatedShift
       );
       setShifts(

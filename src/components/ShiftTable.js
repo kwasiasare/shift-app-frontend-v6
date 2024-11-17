@@ -14,6 +14,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import moment from "moment";
 
 const ShiftTable = ({ shifts, onEdit, onDelete }) => {
+  const shiftId = index + 1;
   return (
     <TableContainer component={Paper} style={{ marginTop: "20px" }}>
       <Table>
@@ -68,7 +69,7 @@ const ShiftTable = ({ shifts, onEdit, onDelete }) => {
         <TableBody>
           {shifts.map((shift, index) => (
             <TableRow key={shift._id}>
-              <TableCell>{shift.index + 1}</TableCell>
+              <TableCell>{shiftId}</TableCell>
               <TableCell>{shift.location}</TableCell>
               <TableCell>{moment(shift.date).format("L")}</TableCell>
               <TableCell>{shift.start_time}</TableCell>
