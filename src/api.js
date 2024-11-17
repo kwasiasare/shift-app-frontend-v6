@@ -13,7 +13,7 @@ export const axiosInstance = axios.create({
 
 export const createShift = async (shiftData) => {
   try {
-    const response = await axiosInstance.post("/", shiftData);
+    const response = await axiosInstance.post("/api/", shiftData);
     return response.data;
   } catch (error) {
     console.error("Error creating shift:", error);
@@ -23,7 +23,7 @@ export const createShift = async (shiftData) => {
 
 export const readShifts = async () => {
   try {
-    const response = await axiosInstance.get("/");
+    const response = await axiosInstance.get("/api/");
     return response.data;
   } catch (error) {
     console.error("Error reading shifts:", error);
@@ -33,7 +33,7 @@ export const readShifts = async () => {
 
 export const updateShift = async (shiftId, updatedData) => {
   try {
-    const response = await axiosInstance.put(`/single/${shiftId}`, updatedData);
+    const response = await axiosInstance.put(`/api/single/${shiftId}`, updatedData);
     return response.data;
   } catch (error) {
     console.error("Error updating shift:", error);
@@ -43,7 +43,7 @@ export const updateShift = async (shiftId, updatedData) => {
 
 export const deleteShift = async (shiftId) => {
   try {
-    const response = await axiosInstance.delete(`/single/${shiftId}`);
+    const response = await axiosInstance.delete(`/api/single/${shiftId}`);
     return response.data;
   } catch (error) {
     console.error("Error deleting shift:", error);
