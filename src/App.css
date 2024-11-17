@@ -1,0 +1,107 @@
+/* App.css */
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: #e0f7fa; /* Light sea-blue background */
+}
+
+.App {
+  text-align: center;
+}
+
+.container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #ffffff; /* White background for main container */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+  border-radius: 8px; /* Rounded corners */
+}
+
+/* Header Styles */
+.App-header {
+  background-color: #00796b; /* Sea-blue background for header */
+  color: white;
+  padding: 20px;
+  font-size: calc(10px + 2vmin);
+  text-align: center;
+  border-radius: 8px;
+}
+
+/* Link Styling */
+.App-link {
+  color: #004d40; /* Darker sea-blue for links */
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* Table Styling */
+.table-header {
+  background-color: #004d40; /* Dark sea-blue for table header */
+  color: white;
+  font-weight: bold;
+}
+
+.table-cell {
+  padding: 8px;
+}
+
+/* Button Styling */
+button {
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+}
+
+button.primary {
+  background-color: #00796b;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+button.primary:hover {
+  background-color: #004d40;
+}
+
+button.secondary {
+  background-color: #004d40;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+button.secondary:hover {
+  background-color: #00332f;
+}
+
+/* Dialog Styles */
+.dialog-title {
+  font-size: 1.5rem;
+  color: #004d40;
+}
+
+.dialog-content {
+  font-size: 1rem;
+  color: #333;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+
+  .App-header {
+    font-size: 1.2rem;
+  }
+
+  button {
+    font-size: 0.9rem;
+  }
+}

@@ -1,0 +1,18 @@
+"""
+Defines the Shift type for Cosmos DB NoSQL database
+"""
+type Shift @model {
+  id: ID!                      # Unique identifier for each shift
+  location: String!            # Location of the shift
+  date: String!                # Date of the shift
+  startTime: String!           # Start time of the shift
+  endTime: String!             # End time of the shift
+  mapStaff: Boolean            # Indicates if staff are mapped (Yes/No)
+  gender: String               # Gender of staff (Male, Female, Other, N/a)
+  originalMessage: String      # Original message or note about the shift
+  dateReceived: String         # Date when the shift was created, generated automatically
+  timeReceived: String         # Time when the shift was created, generated automatically
+  coordinator: String          # Optional coordinator name for the shift
+  assignedTo: String           # Optional name of the person the shift is assigned to
+  status: String!              # Status of the shift (e.g., "Assigned To Coordinator", "In Progress")
+}
