@@ -28,7 +28,7 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
     if (isEditing && currentShift) {
       setShift({
         location: currentShift.location || "",
-        date: currentShift.date || "", // Format the date for the input field|| "",
+        date: formatDate(currentShift.date), // Format date for input, 
         start_time: currentShift.start_time || "",
         end_time: currentShift.end_time || "",
         map_staff: currentShift.map_staff || "No",
@@ -42,6 +42,16 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
       resetForm();
     }
   }, [isEditing, currentShift]);
+
+  const formatDate = (isoString) => {
+    if (!isoString) return "";
+    const date = new Date(isoString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
