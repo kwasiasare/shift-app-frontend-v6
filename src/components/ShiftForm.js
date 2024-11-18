@@ -9,7 +9,7 @@ import {
   Paper,
 } from "@mui/material";
 
-const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift, formatDate }) => {
+const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
   const [shift, setShift] = useState({
     location: "",
     date: "",
@@ -28,7 +28,7 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift, formatD
     if (isEditing && currentShift) {
       setShift({
         location: currentShift.location || "",
-        date: formatDate(currentShift.date), // Format the date for the input field|| "",
+        date: currentShift.date || "", // Format the date for the input field|| "",
         start_time: currentShift.start_time || "",
         end_time: currentShift.end_time || "",
         map_staff: currentShift.map_staff || "No",
@@ -39,20 +39,9 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift, formatD
         status: currentShift.status || "",
       });
     } else {
-      setShift({
-        location: "",
-        date: "",
-        start_time: "",
-        end_time: "",
-        map_staff: "No",
-        gender: "N/a",
-        message: "",
-        coordinator: "",
-        assigned: "",
-        status: "",
-      });
+      resetForm();
     }
-  }, [isEditing, currentShift, formatDate]);
+  }, [isEditing, currentShift]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
