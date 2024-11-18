@@ -13,7 +13,7 @@ export const axiosInstance = axios.create({
 
 export const createShift = async (shiftData) => {
   try {
-    const response = await axiosInstance.post("/api/", shiftData);
+    const response = await axiosInstance.post("/api/shifts", shiftData);
     return response.data;
   } catch (error) {
     console.error("Error creating shift:", error);

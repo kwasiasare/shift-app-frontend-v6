@@ -37,24 +37,26 @@ const App = () => {
     readShiftsFromAPI();
   }, []);
 
-  const readShiftsFromAPI = async () => {
+  const fetchShifts = async () => {
     try {
       const shiftsData = await readShifts();
       setShifts(shiftsData);
     } catch (error) {
       console.error("Error fetching shifts:", error);
+      alert("Failed to fetch shifts. Please try again.");
     }
   };
 
   const handleAddShift = async (newShift) => {
     try {
-      const addedShift = await createShift(newShift);
-      setShifts([...shifts, addedShift]); // Update state with the new shift
-      resetForm(); // Reset the form after adding a shift
+      await createShift(newShift);
+      await fetchShifts(); // Re-fetch shifts after successful creation
+      resetForm(); // Reset form after adding
     } catch (error) {
-      console.error("Error adding shift:", error);
-    }
-  };
+    console.error("Error adding shift:", error);
+    alert("Failed to add shift. Please try again.");
+  }
+};
 
   const handleEditShift = (shiftId) => {
     const shiftToEdit = shifts.find(shift => shift._id === shiftId);
@@ -64,19 +66,13 @@ const App = () => {
 
   const handleUpdateShift = async (updatedShift) => {
     try {
-      const updatedShiftData = await updateShift(
-        updatedShift._id,
-        updatedShift
-      );
-      setShifts(
-        shifts.map((shift) =>
-          shift.Id === updatedShiftData.shiftId ? updatedShiftData : shift
-        )
-      );
+      await updateShift(updatedShift._id, updatedShift); // Use backend ID
+      await fetchShifts(); // Re-fetch shifts after successful update
       setIsEditing(false);
       setCurrentShift(null);
     } catch (error) {
       console.error("Error updating shift:", error);
+      alert("Failed to update shift. Please try again.");
     }
   };
 
@@ -88,11 +84,12 @@ const App = () => {
   const confirmDelete = async () => {
     try {
       await deleteShift(deleteId);
-      setShifts(shifts.filter((shift) => shift._id !== deleteId));
+      await fetchShifts(); // Re-fetch shifts after successful deletion
       setIsDialogOpen(false);
       setDeleteId(null);
     } catch (error) {
       console.error("Error deleting shift:", error);
+      alert("Failed to delete shift. Please try again.");
     }
   };
 

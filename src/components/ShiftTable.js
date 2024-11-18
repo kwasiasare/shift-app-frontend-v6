@@ -66,37 +66,31 @@ const ShiftTable = ({ shifts, onEdit, onDelete }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {shifts.map((shift, index) => {
-              const shiftId = index + 1;
-           return (
+          {shifts.map((shift) => (
             <TableRow key={shift._id}>
-            <TableCell>{shiftId}</TableCell>
-            <TableCell>{shift.location}</TableCell>
-            <TableCell>{moment(shift.date).format("L")}</TableCell>
-            <TableCell>{shift.start_time}</TableCell>
-            <TableCell>{shift.end_time}</TableCell>
-            <TableCell>{shift.map_staff}</TableCell>
-            <TableCell>{shift.gender}</TableCell>
-            <TableCell>{shift.message}</TableCell>
-            <TableCell>{moment(shift.createdAt).format("L")}</TableCell>
-            <TableCell>{moment(shift.date).format("LT")}</TableCell>
-            <TableCell>{shift.coordinator}</TableCell>
-            <TableCell>{shift.assigned}</TableCell>
-            <TableCell>{shift.status}</TableCell>
-            <TableCell>
-              <IconButton onClick={() => onEdit(shift._id)} color="primary">
-                <EditIcon />
-              </IconButton>
-              <IconButton
-                onClick={() => onDelete(shift._id)}
-                color="secondary"
-              >
-                <DeleteIcon />
-              </IconButton>
-            </TableCell>
-          </TableRow>
-           )
-})}
+              <TableCell>{shift._id}</TableCell>
+              <TableCell>{shift.location}</TableCell>
+              <TableCell>{moment(shift.date).format("L")}</TableCell>
+              <TableCell>{shift.start_time}</TableCell>
+              <TableCell>{shift.end_time}</TableCell>
+              <TableCell>{shift.map_staff}</TableCell>
+              <TableCell>{shift.gender}</TableCell>
+              <TableCell>{shift.message}</TableCell>
+              <TableCell>{moment(shift.createdAt).format("L")}</TableCell>
+              <TableCell>{moment(shift.date).format("LT")}</TableCell>
+              <TableCell>{shift.coordinator}</TableCell>
+              <TableCell>{shift.assigned}</TableCell>
+              <TableCell>{shift.status}</TableCell>
+              <TableCell>
+                <IconButton onClick={() => onEdit(shift._id)} color="primary">
+                  <EditIcon />
+                </IconButton>
+                <IconButton onClick={() => onDelete(shift._id)} color="secondary">
+                  <DeleteIcon />
+                </IconButton>
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </TableContainer>
