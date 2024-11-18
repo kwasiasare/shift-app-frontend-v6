@@ -49,9 +49,8 @@ const App = () => {
   const handleAddShift = async (newShift) => {
     try {
       const addedShift = await createShift(newShift);
-      window.location.reload()
-      // setShifts([...shifts, addedShift]);
-      resetForm();
+      setShifts([...shifts, addedShift]); // Update state with the new shift
+      resetForm(); // Reset the form after adding a shift
     } catch (error) {
       console.error("Error adding shift:", error);
     }
@@ -71,7 +70,7 @@ const App = () => {
       );
       setShifts(
         shifts.map((shift) =>
-          shift.shiftId === updatedShiftData.shiftId ? updatedShiftData : shift
+          shift.Id === updatedShiftData.shiftId ? updatedShiftData : shift
         )
       );
       setIsEditing(false);
