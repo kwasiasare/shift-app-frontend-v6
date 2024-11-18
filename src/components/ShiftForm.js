@@ -1,15 +1,7 @@
 import React, { useState, useEffect } from "react";
-import {
-  Grid,
-  TextField,
-  MenuItem,
-  Button,
-  Typography,
-  Container,
-  Paper,
-} from "@mui/material";
+import { Button, TextField, Grid } from "@mui/material";
 
-const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
+const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift, formatDate }) => {
   const [shift, setShift] = useState({
     location: "",
     date: "",
@@ -17,46 +9,30 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
     end_time: "",
     map_staff: "No",
     gender: "N/a",
-    message: "",
     coordinator: "",
     assigned: "",
     status: "",
   });
 
-  // Populate form with current shift data if editing
   useEffect(() => {
     if (isEditing && currentShift) {
       setShift({
-        location: currentShift.location || "",
-        date: currentShift.date || "",
-        start_time: currentShift.start_time || "",
-        end_time: currentShift.end_time || "",
-        map_staff: currentShift.map_staff || "No",
-        gender: currentShift.gender || "N/a",
-        message: currentShift.message || "",
-        coordinator: currentShift.coordinator || "",
-        assigned: currentShift.assigned || "",
-        status: currentShift.status || "",
+        ...currentShift,
+        date: formatDate(currentShift.date), // Format the date for the input field
       });
     } else {
-      setShift({
-        location: "",
-        date: "",
-        start_time: "",
-        end_time: "",
-        map_staff: "No",
-        gender: "N/a",
-        message: "",
-        coordinator: "",
-        assigned: "",
-        status: "",
-      });
+      resetForm();
     }
-  }, [isEditing, currentShift]);
+  }, [currentShift, isEditing, formatDate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setShift({ ...shift, [name]: value });
+
+    // Handle date inputs for proper state storage
+    const formattedValue =
+      name === "date" ? new Date(value).toISOString() : value;
+
+    setShift({ ...shift, [name]: formattedValue });
   };
 
   const handleSubmit = (e) => {
@@ -77,7 +53,6 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
       end_time: "",
       map_staff: "No",
       gender: "N/a",
-      message: "",
       coordinator: "",
       assigned: "",
       status: "",
@@ -85,140 +60,34 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
   };
 
   return (
-    <Container
-      component={Paper}
-      elevation={3}
-      style={{ padding: "16px", marginBottom: "20px" }}
-    >
-      <Typography variant="h6" gutterBottom>
-        {isEditing ? "Edit Shift" : "Add Shift"}
-      </Typography>
-      <form onSubmit={handleSubmit}>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Location"
-              name="location"
-              value={shift.location}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Date"
-              name="date"
-              type="date"
-              InputLabelProps={{ shrink: true }}
-              value={shift.date}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Start Time"
-              name="start_time"
-              type="time"
-              InputLabelProps={{ shrink: true }}
-              value={shift.start_time}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="End Time"
-              name="end_time"
-              type="time"
-              InputLabelProps={{ shrink: true }}
-              value={shift.end_time}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              select
-              label="Map Staff"
-              name="map_staff"
-              value={shift.map_staff}
-              onChange={handleChange}
-            >
-              <MenuItem value="Yes">Yes</MenuItem>
-              <MenuItem value="No">No</MenuItem>
-            </TextField>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              select
-              label="Gender"
-              name="gender"
-              value={shift.gender}
-              onChange={handleChange}
-            >
-              <MenuItem value="Male">Male</MenuItem>
-              <MenuItem value="Female">Female</MenuItem>
-              <MenuItem value="Other">Other</MenuItem>
-              <MenuItem value="N/a">N/a</MenuItem>
-            </TextField>
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Original Message"
-              name="message"
-              value={shift.message}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Coordinator"
-              name="coordinator"
-              value={shift.coordinator}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Assigned To"
-              name="assigned"
-              value={shift.assigned}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              select
-              label="Status"
-              name="status"
-              value={shift.status}
-              onChange={handleChange}
-            >
-              <MenuItem value="Assigned To Coordinator">
-                Assigned To Coordinator
-              </MenuItem>
-              <MenuItem value="Added to Connecteam">
-                Added to Connecteam
-              </MenuItem>
-              <MenuItem value="In Progress">In Progress</MenuItem>
-              <MenuItem value="Shift Completed">Shift Completed</MenuItem>
-            </TextField>
-          </Grid>
-          <Grid item xs={12}>
-            <Button type="submit" variant="contained" color="primary" fullWidth>
-              {isEditing ? "Update Shift" : "Add Shift"}
-            </Button>
-          </Grid>
+    <form onSubmit={handleSubmit}>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            name="location"
+            label="Location"
+            value={shift.location}
+            onChange={handleChange}
+            fullWidth
+          />
         </Grid>
-      </form>
-    </Container>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            type="date"
+            name="date"
+            label="Date"
+            value={shift.date}
+            onChange={handleChange}
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Button type="submit" variant="contained" color="primary">
+            {isEditing ? "Update Shift" : "Add Shift"}
+          </Button>
+        </Grid>
+      </Grid>
+    </form>
   );
 };
 
