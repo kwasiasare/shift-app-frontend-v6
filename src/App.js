@@ -34,7 +34,7 @@ const App = () => {
 
   // Load shifts on component mount
   useEffect(() => {
-    readShiftsFromAPI();
+    fetchShifts();
   }, []);
 
   const fetchShifts = async () => {
