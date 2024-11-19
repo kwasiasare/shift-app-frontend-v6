@@ -35,7 +35,7 @@ const App = () => {
   // Load shifts on component mount
   useEffect(() => {
     fetchShifts();
-  }, []);
+  }, [shifts]);
 
   const fetchShifts = async () => {
     try {
@@ -49,6 +49,7 @@ const App = () => {
 
   const handleAddShift = async (newShift) => {
     try {
+      const addedShift = await createShift(newShift);
       await createShift(newShift);
       await fetchShifts(); // Re-fetch shifts after successful creation
       resetForm(); // Reset form after adding
