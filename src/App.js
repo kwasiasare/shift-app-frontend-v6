@@ -10,6 +10,8 @@ import {
   DialogContentText,
   DialogTitle,
   Button,
+  Snackbar,
+  Alert
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import "./App.css";
@@ -31,7 +33,7 @@ const App = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [deleteId, setDeleteId] = useState(null); // Change to store _id
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
+  const [successMessage, setSuccessMessage] = useState(""); // State for success message
   // Load shifts on component mount
   useEffect(() => {
     readShiftsFromAPI();
@@ -50,7 +52,8 @@ const App = () => {
     try {
       const addedShift = await createShift(newShift);
       setShifts((prevShifts) => [...prevShifts, addedShift]);
-      resetForm();
+      setSuccessMessage("Shift added successfully"); // Set the success message
+      //resetForm();
     } catch (error) {
       console.error("Error adding shift:", error);
     }
@@ -99,6 +102,10 @@ const App = () => {
   const cancelDelete = () => {
     setIsDialogOpen(false);
     setDeleteId(null);
+  };
+
+  const handleCloseSnackbar = () => {
+    setSuccessMessage(""); // Clear the success message
   };
 
   //   // Generate unique ID for each shift
