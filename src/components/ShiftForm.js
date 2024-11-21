@@ -98,7 +98,7 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
               label="Start Time"
               name="start_time"
               type="time"
-              InputLabelProps={{ shrink: true }}
+              Input={{ shrink: true }}
               value={shift.start_time}
               onChange={handleChange}
               required
@@ -111,7 +111,7 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
               label="End Time"
               name="end_time"
               type="time"
-              InputLabelProps={{ shrink: true }}
+              Input={{ shrink: true }}
               value={shift.end_time}
               onChange={handleChange}
               required
@@ -198,11 +198,6 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
               <MenuItem value="In Progress">In Progress</MenuItem>
               <MenuItem value="Shift Completed">Shift Completed</MenuItem>
             </TextField>
-            <input 
-              type="date" 
-              value={formattedDate} 
-              onChange={handleDateChange} 
-          />
           </Box>
           <Box item xs={12}>
             <Button
