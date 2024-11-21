@@ -72,7 +72,7 @@ const ShiftTable = ({ shifts, onEdit, onDelete }) => {
             <TableRow key={shift._id}>
             <TableCell>{shiftId}</TableCell>
             <TableCell>{shift.location}</TableCell>
-            <TableCell>{moment(shift.date).format("L")}</TableCell>
+            <TableCell>{moment(shift.date).format("YYYY-MM-DD")}</TableCell>
             <TableCell>{shift.start_time}</TableCell>
             <TableCell>{shift.end_time}</TableCell>
             <TableCell>{shift.map_staff}</TableCell>
