@@ -33,18 +33,34 @@ const App = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [deleteId, setDeleteId] = useState(null); // Change to store _id
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [successMessage, setSuccessMessage] = useState(""); // State for success message
+  
+  // Snackbar state
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+  
   // Load shifts on component mount
   useEffect(() => {
     readShiftsFromAPI();
   }, []);
 
+  const showSnackbar = (message, severity = "success") => {
+    setSnackbar({ open: true, message, severity });
+  };
+
+  const closeSnackbar = () => {
+    setSnackbar((prev) => ({ ...prev, open: false }));
+  };
+  
   const readShiftsFromAPI = async () => {
     try {
       const shiftsData = await readShifts();
       setShifts(shiftsData);
     } catch (error) {
       console.error("Error fetching shifts:", error);
+      showSnackbar("Failed to fetch shifts", "error");
     }
   };
 
@@ -52,10 +68,11 @@ const App = () => {
     try {
       const addedShift = await createShift(newShift);
       setShifts((prevShifts) => [...prevShifts, addedShift]);
-      setSuccessMessage("Shift added successfully"); // Set the success message
-      //resetForm();
+      showSnackbar("Shift added successfully", "success");
+      resetForm();
     } catch (error) {
       console.error("Error adding shift:", error);
+      showSnackbar("Failed to add shift", "error");
     }
   };  
 
@@ -73,13 +90,15 @@ const App = () => {
       );
       setShifts(
         shifts.map((shift) =>
-          shift.shiftId === updatedShiftData.shiftId ? updatedShiftData : shift
+          shift._Id === updatedShiftData._Id ? updatedShiftData : shift
         )
       );
       setIsEditing(false);
       setCurrentShift(null);
+      showSnackbar("Shift updated successfully", "success");
     } catch (error) {
       console.error("Error updating shift:", error);
+      showSnackbar("Failed to update shift", "error");
     }
   };
 
@@ -94,8 +113,10 @@ const App = () => {
       setShifts(shifts.filter((shift) => shift._id !== deleteId));
       setIsDialogOpen(false);
       setDeleteId(null);
+      showSnackbar("Shift deleted successfully", "success");
     } catch (error) {
       console.error("Error deleting shift:", error);
+      showSnackbar("Failed to delete shift", "error");
     }
   };
 
@@ -104,9 +125,7 @@ const App = () => {
     setDeleteId(null);
   };
 
-  const handleCloseSnackbar = () => {
-    setSuccessMessage(""); // Clear the success message
-  };
+ 
 
   //   // Generate unique ID for each shift
   //   const generateCustomId = () => {
@@ -264,6 +283,7 @@ const App = () => {
   //     setDeleteIndex(null);
   //   };
 
+
   const resetForm = () => {
     setIsEditing(false);
     setCurrentShift(null);
@@ -302,6 +322,19 @@ const App = () => {
             </Button>
           </DialogActions>
         </Dialog>
+        <Snackbar
+          open={snackbar.open} // Controls visibility
+          autoHideDuration={3000} // Closes automatically after 3 seconds
+          onClose={closeSnackbar} // Close event handler
+        >
+          <Alert
+            onClose={closeSnackbar} // Close alert manually
+            severity={snackbar.severity} // Type of message ('success', 'error', etc.)
+            sx={{ width: "100%" }} // Full-width styling
+          >
+            {snackbar.message} // Message content
+          </Alert>
+        </Snackbar>
       </Container>
     </ThemeProvider>
   );
