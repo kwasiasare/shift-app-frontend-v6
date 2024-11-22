@@ -76,16 +76,33 @@ const App = () => {
   }, [readShiftsFromAPI]); // Add as a dependency
 
   const handleAddShift = async (newShift) => {
+    // Optimistically add the shift to the state
+    const tempId = Date.now(); // Temporary ID for the new shift
+    const optimisticShift = { ...newShift, _id: tempId };
+
+    setShifts((prevShifts) => [...prevShifts, optimisticShift]);
+    
     try {
       const addedShift = await createShift(newShift);
-      setShifts((prevShifts) => [...prevShifts, addedShift]);
+      // Replace the temporary shift with the actual one from the API
+      setShifts((prevShifts) =>
+        prevShifts.map((shift) =>
+          shift._id === tempId ? addedShift : shift
+        )
+      );
+
       showSnackbar("Shift added successfully", "success");
-      resetForm();
     } catch (error) {
       console.error("Error adding shift:", error);
+
+      // Rollback the optimistic update
+      setShifts((prevShifts) =>
+        prevShifts.filter((shift) => shift._id !== tempId)
+      );
+
       showSnackbar("Failed to add shift", "error");
     }
-  };  
+  };
 
   const handleEditShift = (shiftId) => {
     const shiftToEdit = shifts.find(shift => shift._id === shiftId);
