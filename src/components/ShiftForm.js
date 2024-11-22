@@ -8,18 +8,6 @@ import {
   Container,
   Paper,
 } from "@mui/material";
-import { DatePicker, TimePicker } from '@mui/x-date-pickers';
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
-import localizedFormat from "dayjs/plugin/localizedFormat";
-//placeholder 
-// Extend dayjs with the necessary plugins
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.extend(localizedFormat);
 
 const defaultShiftState = {
   location: "",
@@ -71,53 +59,57 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
   };
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Container
-        component={Paper}
-        elevation={3}
-        style={{ padding: "16px", marginBottom: "20px" }}
-      >
-        <Typography variant="h6" gutterBottom>
-          {isEditing ? "Edit Shift" : "Add Shift"}
-        </Typography>
-        <form onSubmit={handleSubmit}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <TextField
-                fullWidth
-                label="Location"
-                name="location"
-                value={shift.location}
-                onChange={handleChange}
-                required
-                aria-label="Location"
-              />
-          </Box>
-          <Box sx={{ display: 'flex', gap: 2, marginTop: 2 }}>
-            <DatePicker
-              label="Date"
-              value={shift.date}
-              onChange={(newValue) => {
-                setShift({ ...shift, date: newValue });
-              }}
-              renderInput={(params) => <TextField {...params} />}
-            />
-            <TimePicker
-              label="Start Time"
-              value={shift.start_time}
-              onChange={(newValue) => {
-                setShift({ ...shift, start_time: newValue });
-              }}
-              renderInput={(params) => <TextField {...params} />}
-            />
-            <TimePicker
-              label="End Time"
-              value={shift.end_time}
-              onChange={(newValue) => {
-                setShift({ ...shift, end_time: newValue });
-              }}
-              renderInput={(params) => <TextField {...params} />}
-              required
-            />
+    <Container
+      component={Paper}
+      elevation={3}
+      style={{ padding: "16px", marginBottom: "20px" }}
+    >
+      <Typography variant="h6" gutterBottom>
+        {isEditing ? "Edit Shift" : "Add Shift"}
+      </Typography>
+      <form onSubmit={handleSubmit}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <TextField
+            fullWidth
+            label="Location"
+            name="location"
+            value={shift.location}
+            onChange={handleChange}
+            required
+            aria-label="Location"
+          />
+        </Box>
+        <Box sx={{ display: 'flex', gap: 2, marginTop: 2 }}>
+          <TextField
+            fullWidth
+            label="Date"
+            name="date"
+            type="date"
+            value={shift.date}
+            onChange={handleChange}
+            required
+            aria-label="Date"
+          />
+        <TextField
+            fullWidth
+            label="Start Time"
+            name="start_time"
+            type="time"
+            value={shift.start_time}
+            onChange={handleChange}
+            required
+            aria-label="Start Time"
+          />
+          <TextField
+            fullWidth
+            label="End Time"
+            name="end_time"
+            type="time"
+            value={shift.end_time}
+            onChange={handleChange}
+            required
+            aria-label="End Time"
+          />
           </Box>
           <Box sx={{ marginTop: 2 }}>
             <TextField
@@ -212,8 +204,7 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
             </Box>
          </form>
       </Container>
-    </LocalizationProvider>
-  );
+   );
 };
 
 export default ShiftForm;
