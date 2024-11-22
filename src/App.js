@@ -124,6 +124,7 @@ const App = () => {
       setIsEditing(false);
       setCurrentShift(null);
       showSnackbar("Shift updated successfully", "success");
+      resetForm();
     } catch (error) {
       console.error("Error updating shift:", error);
       showSnackbar("Failed to update shift", "error");
