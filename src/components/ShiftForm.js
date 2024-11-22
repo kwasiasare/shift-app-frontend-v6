@@ -8,6 +8,11 @@ import {
   Container,
   Paper,
 } from "@mui/material";
+import { DatePicker, TimePicker } from '@mui/x-date-pickers';
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+
+
 
 const defaultShiftState = {
   location: "",
@@ -40,9 +45,9 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
     setShift({ ...shift, [name]: value });
   };
 
-  const handleDateChange = (e) => {
-    setShift({ ...shift, date: e.target.value });
-  };
+  //const handleDateChange = (e) => {
+    //setShift({ ...shift, date: e.target.value });
+  //};
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -59,66 +64,55 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
   };
 
   return (
-    <Container
-      component={Paper}
-      elevation={3}
-      style={{ padding: "16px", marginBottom: "20px" }}
-    >
-      <Typography variant="h6" gutterBottom>
-        {isEditing ? "Edit Shift" : "Add Shift"}
-      </Typography>
-      <form onSubmit={handleSubmit}>
-      <Box style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
-        <TextField
-          fullWidth
-          label="Location"
-          name="location"
-          value={shift.location}
-          onChange={handleChange}
-          required
-          aria-label="Location"
-        />
-      </Box>
-          <Box item xs={12} sm={6}>
-          <TextField
-              fullWidth
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <Container
+        component={Paper}
+        elevation={3}
+        style={{ padding: "16px", marginBottom: "20px" }}
+      >
+        <Typography variant="h6" gutterBottom>
+          {isEditing ? "Edit Shift" : "Add Shift"}
+        </Typography>
+        <form onSubmit={handleSubmit}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <TextField
+                fullWidth
+                label="Location"
+                name="location"
+                value={shift.location}
+                onChange={handleChange}
+                required
+                aria-label="Location"
+              />
+          </Box>
+          <Box sx={{ display: 'flex', gap: 2, marginTop: 2 }}>
+            <DatePicker
               label="Date"
-              name="date"
-              type="date"
-              Input={{ shrink: true }} // Ensures proper label behavior for type="date"
               value={shift.date}
-              onChange={handleDateChange}
-              required
-              aria-label="Date"
+              onChange={(newValue) => {
+                setShift({ ...shift, date: newValue });
+              }}
+              renderInput={(params) => <TextField {...params} />}
             />
-          </Box>
-          <Box item xs={12} sm={6}>
-            <TextField
-              fullWidth
+            <TimePicker
               label="Start Time"
-              name="start_time"
-              type="time"
-              Input={{ shrink: true }}
               value={shift.start_time}
-              onChange={handleChange}
-              required
-              aria-label="Start Time"
+              onChange={(newValue) => {
+                setShift({ ...shift, start_time: newValue });
+              }}
+              renderInput={(params) => <TextField {...params} />}
             />
-          </Box>
-          <Box item xs={12} sm={6}>
-            <TextField
-              fullWidth
+            <TimePicker
               label="End Time"
-              name="end_time"
-              type="time"
-              Input={{ shrink: true }}
               value={shift.end_time}
-              onChange={handleChange}
+              onChange={(newValue) => {
+                setShift({ ...shift, end_time: newValue });
+              }}
+              renderInput={(params) => <TextField {...params} />}
               required
-              aria-label="End Time"
             />
           </Box>
-          <Box item xs={12} sm={6}>
+          <Box sx={{ marginTop: 2 }}>
             <TextField
               fullWidth
               select
@@ -132,7 +126,7 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
               <MenuItem value="No">No</MenuItem>
             </TextField>
           </Box>
-          <Box item xs={12} sm={6}>
+          <Box sx={{ marginTop: 2 }}>
             <TextField
               fullWidth
               select
@@ -148,7 +142,7 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
               <MenuItem value="N/A">Not Applicable</MenuItem>
             </TextField>
           </Box>
-          <Box item xs={12}>
+          <Box sx={{ marginTop: 2 }}>
             <TextField
               fullWidth
               label="Original Message"
@@ -158,7 +152,7 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
               aria-label="Message"
             />
           </Box>
-          <Box item xs={12} sm={6}>
+          <Box sx={{ marginTop: 2 }}>
             <TextField
               fullWidth
               label="Coordinator"
@@ -168,7 +162,7 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
               aria-label="Coordinator"
             />
           </Box>
-          <Box item xs={12} sm={6}>
+          <Box sx={{ marginTop: 2 }}>
             <TextField
               fullWidth
               label="Assigned To"
@@ -178,7 +172,7 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
               aria-label="Assigned To"
             />
           </Box>
-          <Box item xs={12}>
+          <Box sx={{ marginTop: 2 }}>
             <TextField
               fullWidth
               select
@@ -199,7 +193,7 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
               <MenuItem value="Shift Completed">Shift Completed</MenuItem>
             </TextField>
           </Box>
-          <Box item xs={12}>
+          <Box sx={{ marginTop: 2 }}>
             <Button
               type="submit"
               variant="contained"
@@ -207,10 +201,11 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
               fullWidth
             >
               {isEditing ? "Update Shift" : "Add Shift"}
-            </Button>
-          </Box>
-       </form>
-    </Container>
+              </Button>
+            </Box>
+         </form>
+      </Container>
+    </LocalizationProvider>
   );
 };
 
