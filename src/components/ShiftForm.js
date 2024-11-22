@@ -14,13 +14,11 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
-import isValid from "dayjs/plugin/isValid";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 
 // Extend dayjs with the necessary plugins
 dayjs.extend(utc);
 dayjs.extend(timezone);
-dayjs.extend(isValid);
 dayjs.extend(localizedFormat);
 
 const defaultShiftState = {
