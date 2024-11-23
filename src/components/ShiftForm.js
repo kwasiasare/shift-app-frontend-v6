@@ -42,7 +42,11 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setShift({ ...shift, [name]: value });
+    if (name === 'date') {
+      setShift({ ...shift, [name]: moment(value).format("YYYY-MM-DD") });
+    } else {
+      setShift({ ...shift, [name]: value });
+    }
   };
 
   //const handleDateChange = (e) => {
