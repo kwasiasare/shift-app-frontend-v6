@@ -8,6 +8,7 @@ import {
   Container,
   Paper,
 } from "@mui/material";
+import moment from "moment";
 
 const defaultShiftState = {
   location: "",
@@ -29,12 +30,16 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
   // Populate form with current shift data if editing
   useEffect(() => {
     if (isEditing && currentShift) {
-      setShift({ ...defaultShiftState, ...currentShift });
+      setShift({
+        ...defaultShiftState,
+        ...currentShift,
+        date: currentShift.date ? moment(currentShift.date).format("YYYY-MM-DD") : "", // Format date
+      });
     } else {
       setShift(defaultShiftState);
     }
   }, [isEditing, currentShift]);
-  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setShift({ ...shift, [name]: value });
@@ -88,7 +93,7 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
             value={shift.date}
             onChange={handleChange}
             required
-            aria-label="Date"
+           // aria-label="Date"
           />
         <TextField
             fullWidth
