@@ -1,3 +1,4 @@
+// creating new build
 import React, { useState, useEffect, useCallback } from "react";
 import ShiftForm from "./components/ShiftForm";
 import ShiftTable from "./components/ShiftTable";
@@ -84,6 +85,7 @@ const App = () => {
       );
 
       showSnackbar("Shift added successfully", "success");
+      resetForm(); // Reset the form after addition
       setFormVisible(false); // Hide form after successful addition
     } catch (error) {
       console.error("Error adding shift:", error);
