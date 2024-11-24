@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
-  Grid,
+  Box,
   TextField,
   MenuItem,
   Button,
@@ -8,55 +8,50 @@ import {
   Container,
   Paper,
 } from "@mui/material";
+import moment from "moment";
+
+const defaultShiftState = {
+  location: "",
+  date: "",
+  start_time: "",
+  end_time: "",
+  map_staff: "No",
+  gender: "N/a",
+  message: "",
+  coordinator: "",
+  assigned: "",
+  status: "",
+};
+
 
 const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
-  const [shift, setShift] = useState({
-    location: "",
-    date: "",
-    start_time: "",
-    end_time: "",
-    map_staff: "No",
-    gender: "N/a",
-    message: "",
-    coordinator: "",
-    assigned: "",
-    status: "",
-  });
+  const [shift, setShift] = useState(defaultShiftState);
 
   // Populate form with current shift data if editing
   useEffect(() => {
     if (isEditing && currentShift) {
       setShift({
-        location: currentShift.location || "",
-        date: formatDate(currentShift.date), // Format date for input, 
-        start_time: currentShift.start_time || "",
-        end_time: currentShift.end_time || "",
-        map_staff: currentShift.map_staff || "No",
-        gender: currentShift.gender || "N/a",
-        message: currentShift.message || "",
-        coordinator: currentShift.coordinator || "",
-        assigned: currentShift.assigned || "",
-        status: currentShift.status || "",
+        ...defaultShiftState,
+        ...currentShift,
+        date: currentShift.date ? moment(currentShift.date).format("YYYY-MM-DD") : "", // Format date
       });
     } else {
-      resetForm();
+      setShift(defaultShiftState);
     }
   }, [isEditing, currentShift]);
 
-  const formatDate = (isoString) => {
-    if (!isoString) return "";
-    const date = new Date(isoString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
-
-
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setShift({ ...shift, [name]: value });
+    if (name === 'date') {
+      setShift({ ...shift, [name]: moment(value).format("YYYY-MM-DD") });
+    } else {
+      setShift({ ...shift, [name]: value });
+    }
   };
+
+  //const handleDateChange = (e) => {
+    //setShift({ ...shift, date: e.target.value });
+  //};
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -69,18 +64,7 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
   };
 
   const resetForm = () => {
-    setShift({
-      location: "",
-      date: "",
-      start_time: "",
-      end_time: "",
-      map_staff: "No",
-      gender: "N/a",
-      message: "",
-      coordinator: "",
-      assigned: "",
-      status: "",
-    });
+    setShift(defaultShiftState);
   };
 
   return (
@@ -93,50 +77,50 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
         {isEditing ? "Edit Shift" : "Add Shift"}
       </Typography>
       <form onSubmit={handleSubmit}>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Location"
-              name="location"
-              value={shift.location}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Date"
-              name="date"
-              type="date"
-              InputLabelProps={{ shrink: true }}
-              value={shift.date}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Start Time"
-              name="start_time"
-              type="time"
-              InputLabelProps={{ shrink: true }}
-              value={shift.start_time}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="End Time"
-              name="end_time"
-              type="time"
-              InputLabelProps={{ shrink: true }}
-              value={shift.end_time}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <TextField
+            fullWidth
+            label="Location"
+            name="location"
+            value={shift.location}
+            onChange={handleChange}
+            required
+            aria-label="Location"
+          />
+        </Box>
+        <Box sx={{ display: 'flex', gap: 2, marginTop: 2 }}>
+          <TextField
+            fullWidth
+            label="Date"
+            name="date"
+            type="date"
+            value={shift.date}
+            onChange={handleChange}
+            required
+           // aria-label="Date"
+          />
+        <TextField
+            fullWidth
+            label="Start Time"
+            name="start_time"
+            type="time"
+            value={shift.start_time}
+            onChange={handleChange}
+            required
+            aria-label="Start Time"
+          />
+          <TextField
+            fullWidth
+            label="End Time"
+            name="end_time"
+            type="time"
+            value={shift.end_time}
+            onChange={handleChange}
+            required
+            aria-label="End Time"
+          />
+          </Box>
+          <Box sx={{ marginTop: 2 }}>
             <TextField
               fullWidth
               select
@@ -144,12 +128,13 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
               name="map_staff"
               value={shift.map_staff}
               onChange={handleChange}
+              aria-label="Map Staff"
             >
               <MenuItem value="Yes">Yes</MenuItem>
               <MenuItem value="No">No</MenuItem>
             </TextField>
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          </Box>
+          <Box sx={{ marginTop: 2 }}>
             <TextField
               fullWidth
               select
@@ -157,41 +142,45 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
               name="gender"
               value={shift.gender}
               onChange={handleChange}
+              aria-label="Gender"
             >
               <MenuItem value="Male">Male</MenuItem>
               <MenuItem value="Female">Female</MenuItem>
               <MenuItem value="Other">Other</MenuItem>
-              <MenuItem value="N/a">N/a</MenuItem>
+              <MenuItem value="N/A">Not Applicable</MenuItem>
             </TextField>
-          </Grid>
-          <Grid item xs={12}>
+          </Box>
+          <Box sx={{ marginTop: 2 }}>
             <TextField
               fullWidth
               label="Original Message"
               name="message"
               value={shift.message}
               onChange={handleChange}
+              aria-label="Message"
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          </Box>
+          <Box sx={{ marginTop: 2 }}>
             <TextField
               fullWidth
               label="Coordinator"
               name="coordinator"
               value={shift.coordinator}
               onChange={handleChange}
+              aria-label="Coordinator"
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          </Box>
+          <Box sx={{ marginTop: 2 }}>
             <TextField
               fullWidth
               label="Assigned To"
               name="assigned"
               value={shift.assigned}
               onChange={handleChange}
+              aria-label="Assigned To"
             />
-          </Grid>
-          <Grid item xs={12}>
+          </Box>
+          <Box sx={{ marginTop: 2 }}>
             <TextField
               fullWidth
               select
@@ -199,6 +188,8 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
               name="status"
               value={shift.status}
               onChange={handleChange}
+              required
+              aria-label="Status"
             >
               <MenuItem value="Assigned To Coordinator">
                 Assigned To Coordinator
@@ -209,16 +200,20 @@ const ShiftForm = ({ onAddShift, currentShift, isEditing, onUpdateShift }) => {
               <MenuItem value="In Progress">In Progress</MenuItem>
               <MenuItem value="Shift Completed">Shift Completed</MenuItem>
             </TextField>
-          </Grid>
-          <Grid item xs={12}>
-            <Button type="submit" variant="contained" color="primary" fullWidth>
+          </Box>
+          <Box sx={{ marginTop: 2 }}>
+            <Button
+              type="submit"
+              variant="contained"
+              color={isEditing ? "secondary" : "primary"}
+              fullWidth
+            >
               {isEditing ? "Update Shift" : "Add Shift"}
-            </Button>
-          </Grid>
-        </Grid>
-      </form>
-    </Container>
-  );
+              </Button>
+            </Box>
+         </form>
+      </Container>
+   );
 };
 
 export default ShiftForm;
