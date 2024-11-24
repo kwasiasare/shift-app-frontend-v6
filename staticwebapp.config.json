@@ -1,0 +1,30 @@
+{
+    "auth": {
+      "identityProviders": {
+        "azureActiveDirectory": {
+          "registration": {
+            "openIdIssuer": "https://login.microsoftonline.com/f19cc5ad-c461-4ef1-a74c-a591cad971fc/v2.0"
+          }
+        },
+        "github": {},
+        "google": {},
+        "twitter": {},
+        "facebook": {}
+      }
+    },
+    "routes": [
+      {
+        "route": "/",
+        "allowedRoles": ["authenticated"] // Restrict access to authenticated users
+      },
+      {
+        "route": "/.auth/login/github",
+        "redirect": "/dashboard" // Redirect after GitHub login
+      },
+      {
+        "route": "/logout",
+        "redirect": "/"
+      }
+    ]
+  }
+  
