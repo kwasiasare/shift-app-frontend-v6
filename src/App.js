@@ -27,17 +27,14 @@ const theme = createTheme({
   typography: { fontFamily: "Roboto, sans-serif" },
 });
 
-//const date = new Date('2024-11-18T00:00:00.000Z');
-//const formattedDate = date.toISOString().split('T')[0]; // Extracts the date part
-
-
 const App = () => {
   const [shifts, setShifts] = useState([]);
   const [currentShift, setCurrentShift] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [deleteId, setDeleteId] = useState(null); // Change to store _id
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  
+  const [isFormVisible, setFormVisible] = useState(false); // New state for form visibility
+
   // Snackbar state
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -45,11 +42,6 @@ const App = () => {
     severity: "success",
   });
   
-  // Load shifts on component mount
-  //useEffect(() => {
-  //  readShiftsFromAPI();
-  //}, []);
-
   // Snackbar handlers
   const showSnackbar = (message, severity = "success") => {
     setSnackbar({ open: true, message, severity });
@@ -92,6 +84,7 @@ const App = () => {
       );
 
       showSnackbar("Shift added successfully", "success");
+      setFormVisible(false); // Hide form after successful addition
     } catch (error) {
       console.error("Error adding shift:", error);
 
@@ -108,6 +101,7 @@ const App = () => {
     const shiftToEdit = shifts.find(shift => shift._id === shiftId);
     setCurrentShift(shiftToEdit);
     setIsEditing(true);
+    setFormVisible(true); // Show form when editing
   };
 
   const handleUpdateShift = async (updatedShift) => {
@@ -124,6 +118,7 @@ const App = () => {
       setIsEditing(false);
       setCurrentShift(null);
       showSnackbar("Shift updated successfully", "success");
+      setFormVisible(false); // Hide form after update
       resetForm();
     } catch (error) {
       console.error("Error updating shift:", error);
@@ -159,18 +154,36 @@ const App = () => {
     setCurrentShift(null);
   };
 
+  const toggleFormVisibility = () => {
+    setFormVisible((prev) => !prev);
+    if (isEditing) {
+      setIsEditing(false);
+      setCurrentShift(null);
+    }
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Container>
         <Typography variant="h4" align="center" gutterBottom>
           Shift Management
         </Typography>
-        <ShiftForm
-          onAddShift={handleAddShift}
-          currentShift={currentShift}
-          isEditing={isEditing}
-          onUpdateShift={handleUpdateShift}
-        />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={toggleFormVisibility}
+          style={{ marginBottom: "16px" }}
+        >
+          {isFormVisible ? "Hide Form" : "Add Shift"}
+        </Button>
+        {isFormVisible && (
+          <ShiftForm
+            onAddShift={handleAddShift}
+            currentShift={currentShift}
+            isEditing={isEditing}
+            onUpdateShift={handleUpdateShift}
+          />
+        )}
         <ShiftTable
           shifts={shifts}
           onEdit={handleEditShift}
