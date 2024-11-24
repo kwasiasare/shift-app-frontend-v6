@@ -84,6 +84,7 @@ const App = () => {
       );
 
       showSnackbar("Shift added successfully", "success");
+      resetForm(); // Reset the form after addition
       setFormVisible(false); // Hide form after successful addition
     } catch (error) {
       console.error("Error adding shift:", error);
