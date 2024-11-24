@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import ShiftForm from "./components/ShiftForm";
 import ShiftTable from "./components/ShiftTable";
 import {
@@ -10,6 +10,8 @@ import {
   DialogContentText,
   DialogTitle,
   Button,
+  Snackbar,
+  Alert
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import "./App.css";
@@ -25,38 +27,82 @@ const theme = createTheme({
   typography: { fontFamily: "Roboto, sans-serif" },
 });
 
+//const date = new Date('2024-11-18T00:00:00.000Z');
+//const formattedDate = date.toISOString().split('T')[0]; // Extracts the date part
+
+
 const App = () => {
   const [shifts, setShifts] = useState([]);
   const [currentShift, setCurrentShift] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [deleteId, setDeleteId] = useState(null); // Change to store _id
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
+  
+  // Snackbar state
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+  
   // Load shifts on component mount
-  useEffect(() => {
-    fetchShifts();
-  }, [shifts]);
+  //useEffect(() => {
+  //  readShiftsFromAPI();
+  //}, []);
 
-  const fetchShifts = async () => {
+  // Snackbar handlers
+  const showSnackbar = (message, severity = "success") => {
+    setSnackbar({ open: true, message, severity });
+  };
+
+  const closeSnackbar = () => {
+    setSnackbar((prev) => ({ ...prev, open: false }));
+  };
+  
+  // Fetch shift on mount
+  const readShiftsFromAPI = useCallback(async () => {
     try {
       const shiftsData = await readShifts();
       setShifts(shiftsData);
+      showSnackbar("Shifts fetched successfully", "success");
     } catch (error) {
       console.error("Error fetching shifts:", error);
-      alert("Failed to fetch shifts. Please try again.");
+      showSnackbar("Failed to fetch shifts", "error");
     }
-  };
+  }, []); // Empty dependency array because no dependencies are used within the function
+
+  useEffect(() => {
+    readShiftsFromAPI();
+  }, [readShiftsFromAPI]); // Add as a dependency
 
   const handleAddShift = async (newShift) => {
+    // Optimistically add the shift to the state
+    const tempId = Date.now(); // Temporary ID for the new shift
+    const optimisticShift = { ...newShift, _id: tempId };
+
+    setShifts((prevShifts) => [...prevShifts, optimisticShift]);
+    
     try {
-      await createShift(newShift);
-      await fetchShifts(); // Re-fetch shifts after successful creation
-      resetForm(); // Reset form after adding
+      const addedShift = await createShift(newShift);
+      // Replace the temporary shift with the actual one from the API
+      setShifts((prevShifts) =>
+        prevShifts.map((shift) =>
+          shift._id === tempId ? addedShift : shift
+        )
+      );
+
+      showSnackbar("Shift added successfully", "success");
     } catch (error) {
-    console.error("Error adding shift:", error);
-    alert("Failed to add shift. Please try again.");
-  }
-};
+      console.error("Error adding shift:", error);
+
+      // Rollback the optimistic update
+      setShifts((prevShifts) =>
+        prevShifts.filter((shift) => shift._id !== tempId)
+      );
+
+      showSnackbar("Failed to add shift", "error");
+    }
+  };
 
   const handleEditShift = (shiftId) => {
     const shiftToEdit = shifts.find(shift => shift._id === shiftId);
@@ -66,13 +112,22 @@ const App = () => {
 
   const handleUpdateShift = async (updatedShift) => {
     try {
-      await updateShift(updatedShift._id, updatedShift); // Use backend ID
-      await fetchShifts(); // Re-fetch shifts after successful update
+      const updatedShiftData = await updateShift(
+        updatedShift._id,
+        updatedShift
+      );
+      setShifts((prevShifts) =>
+        prevShifts.map((shift) =>
+          shift._id === updatedShiftData._id ? updatedShiftData : shift
+        )
+      );
       setIsEditing(false);
       setCurrentShift(null);
+      showSnackbar("Shift updated successfully", "success");
+      resetForm();
     } catch (error) {
       console.error("Error updating shift:", error);
-      alert("Failed to update shift. Please try again.");
+      showSnackbar("Failed to update shift", "error");
     }
   };
 
@@ -84,12 +139,13 @@ const App = () => {
   const confirmDelete = async () => {
     try {
       await deleteShift(deleteId);
-      await fetchShifts(); // Re-fetch shifts after successful deletion
+      setShifts((prevShifts) => prevShifts.filter((shift) => shift._id !== deleteId));
       setIsDialogOpen(false);
       setDeleteId(null);
+      showSnackbar("Shift deleted successfully", "success");
     } catch (error) {
       console.error("Error deleting shift:", error);
-      alert("Failed to delete shift. Please try again.");
+      showSnackbar("Failed to delete shift", "error");
     }
   };
 
@@ -97,162 +153,6 @@ const App = () => {
     setIsDialogOpen(false);
     setDeleteId(null);
   };
-
-  //   // Generate unique ID for each shift
-  //   const generateCustomId = () => {
-  //     const currentDate = new Date();
-  //     const year = currentDate.getFullYear();
-  //     const month = String(currentDate.getMonth() + 1).padStart(2, "0");
-  //     const day = String(currentDate.getDate()).padStart(2, "0");
-  //     const formattedSequence = String(sequence).padStart(3, "0");
-  //     setSequence(sequence + 1);
-  //     return `${year}${month}${day}-${formattedSequence}`;
-  //   };
-
-  //   // Fetch shifts from Cosmos DB
-  //   const fetchShifts = async () => {
-  //     // const query = `
-  //     //     query {
-  //     //         Shift {
-  //     //             items {
-  //     //                 shiftId
-  //     //                 location
-  //     //                 date
-  //     //                 startTime
-  //     //                 endTime
-  //     //                 mapStaff
-  //     //                 gender
-  //     //                 originalMessage
-  //     //                 dateReceived
-  //     //                 timeReceived
-  //     //                 coordinator
-  //     //                 assignedTo
-  //     //                 status
-  //     //             }
-  //     //         }
-  //     //     }
-  //     // `;
-
-  //     try {
-  //       const response = await fetch(API_URL, {
-  //         method: "GET",
-  //         headers: { "Content-Type": "application/json" },
-  //       });
-
-  //       if (!response.ok) {
-  //         const errorText = await response.text();
-  //         console.error("Failed to fetch shifts:", errorText);
-  //         return;
-  //       }
-
-  //       console.log("--------------------------");
-  //       console.log(response);
-
-  //       const result = await response.json();
-  //       setShifts(result.data.Shift.items);
-  //     } catch (error) {
-  //       console.error("Failed to fetch shifts:", error);
-  //     }
-  //   };
-
-  //   // Add a new shift to Cosmos DB
-  //   const addShift = async (newShift) => {
-  //     const mutation = `
-  //             mutation {
-  //                 createShift(data: {
-  //                     shiftId: "${generateCustomId()}",
-  //                     location: "${newShift.location}",
-  //                     date: "${newShift.date}",
-  //                     startTime: "${newShift.startTime}",
-  //                     endTime: "${newShift.endTime}",
-  //                     mapStaff: ${newShift.mapStaff},
-  //                     gender: "${newShift.gender}",
-  //                     originalMessage: "${newShift.originalMessage}",
-  //                     dateReceived: "${new Date().toLocaleDateString()}",
-  //                     timeReceived: "${new Date().toLocaleTimeString()}",
-  //                     coordinator: "${newShift.coordinator}",
-  //                     assignedTo: "${newShift.assignedTo}",
-  //                     status: "${
-  //                       newShift.status
-  //                     }" eived: "${new Date().toLocaleTimeString()}"
-  //                 }) {
-  //                     shiftId
-  //                 }
-  //             }
-  //         `;
-
-  //     fetchShifts();
-  //   };
-
-  //   // Update an existing shift in Cosmos DB
-  //   const updateShift = async (updatedShift) => {
-  //     const mutation = `
-  //             mutation {
-  //                 updateShift(id: "${updatedShift.shiftId}", data: {
-  //                     location: "${updatedShift.location}",
-  //                     date: "${updatedShift.date}",
-  //                     startTime: "${updatedShift.startTime}",
-  //                     endTime: "${updatedShift.endTime}",
-  //                     mapStaff: ${updatedShift.mapStaff},
-  //                     gender: "${updatedShift.gender}",
-  //                     originalMessage: "${updatedShift.originalMessage}",
-  //                     coordinator: "${updatedShift.coordinator}",
-  //                     assignedTo: "${updatedShift.assignedTo}",
-  //                     status: "${updatedShift.status}"
-  //                 }) {
-  //                     shiftId
-  //                 }
-  //             }
-  //         `;
-  //     await fetch(API_URL, {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({ query: mutation }),
-  //     });
-  //     fetchShifts();
-  //     resetForm();
-  //   };
-
-  //   // Delete a shift from Cosmos DB
-  //   const deleteShift = async (shiftId) => {
-  //     const mutation = `
-  //             mutation {
-  //                 deleteShift(id: "${shiftId}") {
-  //                     shiftId
-  //                 }
-  //             }
-  //         `;
-  //     await fetch(API_URL, {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({ query: mutation }),
-  //     });
-  //     fetchShifts();
-  //   };
-
-  // Form handlers
-  //   const handleAddShift = (newShift) => addShift(newShift);
-  //   const handleEditShift = (index) => {
-  //     setCurrentShift(shifts[index]);
-  //     setIsEditing(true);
-  //   };
-
-  //   const handleUpdateShift = (updatedShift) => updateShift(updatedShift);
-  //   const handleDeleteShift = (index) => {
-  //     setDeleteIndex(index);
-  //     setIsDialogOpen(true);
-  //   };
-
-  //   const confirmDelete = () => {
-  //     deleteShift(shifts[deleteIndex].shiftId);
-  //     setIsDialogOpen(false);
-  //     setDeleteIndex(null);
-  //   };
-
-  //   const cancelDelete = () => {
-  //     setIsDialogOpen(false);
-  //     setDeleteIndex(null);
-  //   };
 
   const resetForm = () => {
     setIsEditing(false);
@@ -292,9 +192,25 @@ const App = () => {
             </Button>
           </DialogActions>
         </Dialog>
+        <Snackbar
+          open={snackbar.open} // Controls visibility
+          autoHideDuration={3000} // Closes automatically after 3 seconds
+          onClose={closeSnackbar} // Close event handler
+        >
+          <Alert
+            onClose={closeSnackbar} // Close alert manually
+            severity={snackbar.severity} // Type of message ('success', 'error', etc.)
+            sx={{ width: "100%" }} // Full-width styling
+          >
+            {snackbar.message} 
+          </Alert>
+        </Snackbar>
       </Container>
     </ThemeProvider>
   );
 };
+
+
+
 
 export default App;
