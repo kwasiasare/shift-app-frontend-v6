@@ -13,11 +13,6 @@ export const axiosInstance = axios.create({
 
 export const createShift = async (shiftData) => {
   try {
-    // Add the "time created" field to the shift data
-    const updatedShiftData = {
-      ...shiftData,
-      timeCreated: new Date().toISOString(), // ISO format timestamp
-    };
     const response = await axiosInstance.post("/api/", shiftData);
     return response.data;
   } catch (error) {

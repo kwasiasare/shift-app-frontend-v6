@@ -69,11 +69,9 @@ const App = () => {
   }, [readShiftsFromAPI]); // Add as a dependency
 
   const handleAddShift = async (newShift) => {
-    // Set the "time received" to the current time
-  const currentTime = new Date().toISOString();
     // Optimistically add the shift to the state
     const tempId = Date.now(); // Temporary ID for the new shift
-    const optimisticShift = { ...newShift, _id: tempId, timeReceived: currentTime };
+    const optimisticShift = { ...newShift, _id: tempId };
 
     setShifts((prevShifts) => [...prevShifts, optimisticShift]);
     
