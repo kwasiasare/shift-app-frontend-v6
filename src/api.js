@@ -2,7 +2,7 @@
 import axios from "axios";
 
 // Replace with your actual Azure Function App URL
-const API_BASE_URL = "https://shift-app-backend-v6.onrender.com";
+const API_BASE_URL = "https://6n4rnxuqbd.execute-api.us-east-1.amazonaws.com";
 
 export const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
