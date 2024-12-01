@@ -1,0 +1,18 @@
+{
+  "resourceName": "dynamo31c13057",
+  "tableName": "dynamo31c13057",
+  "partitionKey": {
+    "fieldName": "shift_ID",
+    "fieldType": "string"
+  },
+  "gsi": [
+    {
+      "name": "scensob",
+      "partitionKey": {
+        "fieldName": "shift_ID",
+        "fieldType": "string"
+      }
+    }
+  ],
+  "triggerFunctions": []
+}

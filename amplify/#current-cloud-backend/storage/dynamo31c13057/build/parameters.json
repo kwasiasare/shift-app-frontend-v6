@@ -1,0 +1,5 @@
+{
+  "tableName": "dynamo31c13057",
+  "partitionKeyName": "shift_ID",
+  "partitionKeyType": "S"
+}
