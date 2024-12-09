@@ -1,4 +1,3 @@
-//deploy test
 import React, { useState, useEffect, useCallback } from "react";
 import ShiftForm from "./components/ShiftForm";
 import ShiftTable from "./components/ShiftTable";
@@ -19,7 +18,7 @@ import "./App.css";
 import { readShifts, createShift, updateShift, deleteShift } from "./api";
 import { useAuth } from "react-oidc-context";
 
-function App() {
+const App = () => {
   const auth = useAuth();
 
   const signOutRedirect = () => {
@@ -50,39 +49,28 @@ function App() {
     );
   }
 
-  return (
-    <div>
-      <button onClick={() => auth.signinRedirect()}>Sign in</button>
-      <button onClick={() => signOutRedirect()}>Sign out</button>
-    </div>
-  );
-}
-// Custom theme
-const theme = createTheme({
-  palette: {
-    primary: { main: "#00796b" },
-    secondary: { main: "#004d40" },
-    background: { default: "#e0f7fa" },
-  },
-  typography: { fontFamily: "Roboto, sans-serif" },
-});
+  const theme = createTheme({
+    palette: {
+      primary: { main: "#00796b" },
+      secondary: { main: "#004d40" },
+      background: { default: "#e0f7fa" },
+    },
+    typography: { fontFamily: "Roboto, sans-serif" },
+  });
 
-const App = () => {
   const [shifts, setShifts] = useState([]);
   const [currentShift, setCurrentShift] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [deleteId, setDeleteId] = useState(null); // Change to store _id
+  const [deleteId, setDeleteId] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isFormVisible, setFormVisible] = useState(false); // New state for form visibility
+  const [isFormVisible, setFormVisible] = useState(false);
 
-  // Snackbar state
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
     severity: "success",
   });
-  
-  // Snackbar handlers
+
   const showSnackbar = (message, severity = "success") => {
     setSnackbar({ open: true, message, severity });
   };
@@ -90,8 +78,7 @@ const App = () => {
   const closeSnackbar = () => {
     setSnackbar((prev) => ({ ...prev, open: false }));
   };
-  
-  // Fetch shift on mount
+
   const readShiftsFromAPI = useCallback(async () => {
     try {
       const shiftsData = await readShifts();
@@ -101,48 +88,40 @@ const App = () => {
       console.error("Error fetching shifts:", error);
       showSnackbar("Failed to fetch shifts", "error");
     }
-  }, []); // Empty dependency array because no dependencies are used within the function
+  }, []);
 
   useEffect(() => {
     readShiftsFromAPI();
-  }, [readShiftsFromAPI]); // Add as a dependency
+  }, [readShiftsFromAPI]);
 
   const handleAddShift = async (newShift) => {
-    // Optimistically add the shift to the state
-    const tempId = Date.now(); // Temporary ID for the new shift
+    const tempId = Date.now();
     const optimisticShift = { ...newShift, _id: tempId };
 
     setShifts((prevShifts) => [...prevShifts, optimisticShift]);
-    
+
     try {
       const addedShift = await createShift(newShift);
-      // Replace the temporary shift with the actual one from the API
       setShifts((prevShifts) =>
-        prevShifts.map((shift) =>
-          shift._id === tempId ? addedShift : shift
-        )
+        prevShifts.map((shift) => (shift._id === tempId ? addedShift : shift))
       );
-
       showSnackbar("Shift added successfully", "success");
-      resetForm(); // Reset the form after addition
-      setFormVisible(false); // Hide form after successful addition
+      resetForm();
+      setFormVisible(false);
     } catch (error) {
       console.error("Error adding shift:", error);
-
-      // Rollback the optimistic update
       setShifts((prevShifts) =>
         prevShifts.filter((shift) => shift._id !== tempId)
       );
-
       showSnackbar("Failed to add shift", "error");
     }
   };
 
   const handleEditShift = (shiftId) => {
-    const shiftToEdit = shifts.find(shift => shift._id === shiftId);
+    const shiftToEdit = shifts.find((shift) => shift._id === shiftId);
     setCurrentShift(shiftToEdit);
     setIsEditing(true);
-    setFormVisible(true); // Show form when editing
+    setFormVisible(true);
   };
 
   const handleUpdateShift = async (updatedShift) => {
@@ -159,7 +138,7 @@ const App = () => {
       setIsEditing(false);
       setCurrentShift(null);
       showSnackbar("Shift updated successfully", "success");
-      setFormVisible(false); // Hide form after update
+      setFormVisible(false);
       resetForm();
     } catch (error) {
       console.error("Error updating shift:", error);
@@ -175,7 +154,9 @@ const App = () => {
   const confirmDelete = async () => {
     try {
       await deleteShift(deleteId);
-      setShifts((prevShifts) => prevShifts.filter((shift) => shift._id !== deleteId));
+      setShifts((prevShifts) =>
+        prevShifts.filter((shift) => shift._id !== deleteId)
+      );
       setIsDialogOpen(false);
       setDeleteId(null);
       showSnackbar("Shift deleted successfully", "success");
@@ -247,24 +228,21 @@ const App = () => {
           </DialogActions>
         </Dialog>
         <Snackbar
-          open={snackbar.open} // Controls visibility
-          autoHideDuration={3000} // Closes automatically after 3 seconds
-          onClose={closeSnackbar} // Close event handler
+          open={snackbar.open}
+          autoHideDuration={3000}
+          onClose={closeSnackbar}
         >
           <Alert
-            onClose={closeSnackbar} // Close alert manually
-            severity={snackbar.severity} // Type of message ('success', 'error', etc.)
-            sx={{ width: "100%" }} // Full-width styling
+            onClose={closeSnackbar}
+            severity={snackbar.severity}
+            sx={{ width: "100%" }}
           >
-            {snackbar.message} 
+            {snackbar.message}
           </Alert>
         </Snackbar>
       </Container>
     </ThemeProvider>
   );
 };
-
-
-
 
 export default App;
