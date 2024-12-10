@@ -199,73 +199,73 @@ const App = () => {
   }
 
   return (
-    <div>
-      <button onClick={() => auth.signinRedirect()}>Sign in</button>
-      <button onClick={() => signOutRedirect()}>Sign out</button>
-    </div>
+    <ThemeProvider theme={theme}>
+      <Container>
+        <Typography variant="h4" align="center" gutterBottom>
+          Shift Management
+        </Typography>
+        {auth.isAuthenticated ? ( // Conditional rendering moved inside the main component
+          <div>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={toggleFormVisibility}
+              style={{ marginBottom: "16px" }}
+            >
+              {isFormVisible ? "Hide Form" : "Add Shift"}
+            </Button>
+            {isFormVisible && (
+              <ShiftForm
+                onAddShift={handleAddShift}
+                currentShift={currentShift}
+                isEditing={isEditing}
+                onUpdateShift={handleUpdateShift}
+              />
+            )}
+            <ShiftTable
+              shifts={shifts}
+              onEdit={handleEditShift}
+              onDelete={handleDeleteShift}
+            />
+            <Dialog open={isDialogOpen} onClose={cancelDelete}>
+              <DialogTitle>Confirm Delete</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  Are you sure you want to delete this shift?
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={cancelDelete} color="primary">
+                  Cancel
+                </Button>
+                <Button onClick={confirmDelete} color="secondary" autoFocus>
+                  OK
+                </Button>
+              </DialogActions>
+            </Dialog>
+            <Snackbar
+              open={snackbar.open}
+              autoHideDuration={3000}
+              onClose={closeSnackbar}
+            >
+              <Alert
+                onClose={closeSnackbar}
+                severity={snackbar.severity}
+                sx={{ width: "100%" }}
+              >
+                {snackbar.message}
+              </Alert>
+            </Snackbar>
+          </div>
+        ) : (
+          <div>
+            <button onClick={() => auth.signinRedirect()}>Sign in</button>
+            <button onClick={() => signOutRedirect()}>Sign out</button>
+          </div>
+        )}
+      </Container>
+    </ThemeProvider>
   );
 };
 
-
-
-const AppWithTheme = () => (
-  <ThemeProvider theme={theme}>
-    <Container>
-      <Typography variant="h4" align="center" gutterBottom>
-        Shift Management
-      </Typography>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={toggleFormVisibility}
-        style={{ marginBottom: "16px" }}
-      >
-        {isFormVisible ? "Hide Form" : "Add Shift"}
-      </Button>
-      {isFormVisible && (
-        <ShiftForm
-          onAddShift={handleAddShift}
-          currentShift={currentShift}
-          isEditing={isEditing}
-          onUpdateShift={handleUpdateShift}
-        />
-      )}
-      <ShiftTable
-        shifts={shifts}
-        onEdit={handleEditShift}
-        onDelete={handleDeleteShift}
-      />
-      <Dialog open={isDialogOpen} onClose={cancelDelete}>
-        <DialogTitle>Confirm Delete</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete this shift?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={cancelDelete} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={confirmDelete} color="secondary" autoFocus>
-            OK
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={3000}
-        onClose={closeSnackbar}
-      >
-        <Alert
-          onClose={closeSnackbar}
-          severity={snackbar.severity}
-          sx={{ width: "100%" }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-    </Container>
-  </ThemeProvider>
-);
-
-export default AppWithTheme;
+export default App;
