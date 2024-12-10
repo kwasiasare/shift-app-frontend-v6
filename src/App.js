@@ -22,7 +22,6 @@ import {
   deleteShift,
 } from "./api";
 import { useAuth } from "react-oidc-context";
-import { useNavigate } from "react-router-dom";
 
 // Custom theme
 const theme = createTheme({
@@ -36,13 +35,6 @@ const theme = createTheme({
 
 const App = () => {
   const auth = useAuth();
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (auth.isAuthenticated) {
-      navigate("/dashboard"); // Navigate to main app page after login
-    }
-  }, [auth.isAuthenticated, navigate]);
-
   const [shifts, setShifts] = useState([]);
   const [currentShift, setCurrentShift] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -201,6 +193,13 @@ const App = () => {
         <pre> Refresh Token: {auth.user?.refresh_token} </pre>
 
         <button onClick={() => auth.removeUser()}>Sign out</button>
+        {/* Dashboard components */}
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={toggleFormVisibility}
+          style={{ marginBottom: "16px" }}
+        ></Button>
       </div>
     );
   }
