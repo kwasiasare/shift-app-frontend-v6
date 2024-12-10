@@ -15,13 +15,27 @@ import {
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import "./App.css";
-import { readShifts, createShift, updateShift, deleteShift } from "./api";
+import {
+  readShifts,
+  createShift,
+  updateShift,
+  deleteShift,
+} from "./api";
 import { useAuth } from "react-oidc-context";
+
+// Custom theme
+const theme = createTheme({
+  palette: {
+    primary: { main: "#00796b" },
+    secondary: { main: "#004d40" },
+    background: { default: "#e0f7fa" },
+  },
+  typography: { fontFamily: "Roboto, sans-serif" },
+});
 
 const App = () => {
   const auth = useAuth();
 
-  // Move useState calls outside of any conditional logic
   const [shifts, setShifts] = useState([]);
   const [currentShift, setCurrentShift] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -37,11 +51,11 @@ const App = () => {
   });
 
   const signOutRedirect = () => {
-    const clientId = "2o4iidvugug5stnj5hvqjopg89";
-    const logoutUri = "<logout uri>";
-    const cognitoDomain = "https://<user pool domain>";
+    const clientId = "62jkednvc44e83e937q5u3ti1u";
+    const logoutUri = "https://dev-env.d35xgk4ok41v85.amplifyapp.com/";
+    const cognitoDomain = "https://us-east-1m4mzn2nke.auth.us-east-1.amazoncognito.com";
     window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(
-      logoutUri
+      logoutUri,
     )}`;
   };
 
@@ -64,14 +78,13 @@ const App = () => {
       console.error("Error fetching shifts:", error);
       showSnackbar("Failed to fetch shifts", "error");
     }
-  }, []); // Empty dependency array
+  }, []);
 
   useEffect(() => {
     readShiftsFromAPI();
-  }, [readShiftsFromAPI]); // Add as a dependency
+  }, [readShiftsFromAPI]);
 
   const handleAddShift = async (newShift) => {
-    // Optimistically add the shift to the state
     const tempId = Date.now();
     const optimisticShift = { ...newShift, _id: tempId };
 
@@ -79,7 +92,6 @@ const App = () => {
 
     try {
       const addedShift = await createShift(newShift);
-      // Replace the temporary shift with the actual one from the API
       setShifts((prevShifts) =>
         prevShifts.map((shift) =>
           shift._id === tempId ? addedShift : shift,
@@ -91,12 +103,9 @@ const App = () => {
       setFormVisible(false);
     } catch (error) {
       console.error("Error adding shift:", error);
-
-      // Rollback the optimistic update
       setShifts((prevShifts) =>
         prevShifts.filter((shift) => shift._id !== tempId),
       );
-
       showSnackbar("Failed to add shift", "error");
     }
   };
@@ -197,15 +206,7 @@ const App = () => {
   );
 };
 
-// Custom theme
-const theme = createTheme({
-  palette: {
-    primary: { main: "#00796b" },
-    secondary: { main: "#004d40" },
-    background: { default: "#e0f7fa" },
-  },
-  typography: { fontFamily: "Roboto, sans-serif" },
-});
+
 
 const AppWithTheme = () => (
   <ThemeProvider theme={theme}>
