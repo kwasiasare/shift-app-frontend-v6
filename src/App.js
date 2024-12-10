@@ -51,9 +51,9 @@ const App = () => {
   });
 
   const signOutRedirect = () => {
-    const clientId = "62jkednvc44e83e937q5u3ti1u";
-    const logoutUri = "https://dev-env.d35xgk4ok41v85.amplifyapp.com/";
-    const cognitoDomain = "https://us-east-1m4mzn2nke.auth.us-east-1.amazoncognito.com";
+    const clientId = "3ds755bcao4d6morouahs6p16l";
+    const logoutUri = "www.scensobstaffing.com/";
+    const cognitoDomain = "https://us-east-1h0xvcwevw.auth.us-east-1.amazoncognito.com";
     window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(
       logoutUri,
     )}`;
