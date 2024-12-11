@@ -22,6 +22,7 @@ import {
   deleteShift,
 } from "./api";
 import { useAuth } from "react-oidc-context";
+import { useNavigate, useLocation } from "react-router-dom";
 
 // Custom theme
 const theme = createTheme({
@@ -35,6 +36,9 @@ const theme = createTheme({
 
 const App = () => {
   const auth = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [shifts, setShifts] = useState([]);
   const [currentShift, setCurrentShift] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -48,6 +52,24 @@ const App = () => {
     message: "",
     severity: "success",
   });
+
+  // Handle OAuth redirect callback
+  useEffect(() => {
+    if (location.search.includes("code=") || location.hash.includes("id_token")) {
+      auth
+        .signinRedirectCallback()
+        .then(() => {
+          console.log("Redirect callback processed successfully.");
+          navigate("/dashboard"); // Redirect to the desired route
+        })
+        .catch((error) => {
+          console.error("Error handling redirect callback:", error);
+        });
+    } else if (auth.isAuthenticated) {
+      navigate("/dashboard");
+    }
+  }, [auth, location, navigate]);
+
 
   const signOutRedirect = () => {
     const clientId = "3ds755bcao4d6morouahs6p16l";
@@ -184,26 +206,6 @@ const App = () => {
     return <div>Encountering error... {auth.error.message}</div>;
   }
 
-  if (auth.isAuthenticated) {
-    return (
-      <div>
-        <pre> Hello: {auth.user?.profile.email} </pre>
-        <pre> ID Token: {auth.user?.id_token} </pre>
-        <pre> Access Token: {auth.user?.access_token} </pre>
-        <pre> Refresh Token: {auth.user?.refresh_token} </pre>
-
-        <button onClick={() => auth.removeUser()}>Sign out</button>
-        {/* Dashboard components */}
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={toggleFormVisibility}
-          style={{ marginBottom: "16px" }}
-        ></Button>
-      </div>
-    );
-  }
-
   return (
     <ThemeProvider theme={theme}>
       <Container>
@@ -211,7 +213,11 @@ const App = () => {
           Shift Management
         </Typography>
         {auth.isAuthenticated ? ( // Conditional rendering moved inside the main component
-          <div>
+          <>
+            <Typography>Welcome, {auth.user?.profile.email}</Typography>
+            <Button variant="contained" color="primary" onClick={signOutRedirect}>
+              Sign Out
+            </Button>
             <Button
               variant="contained"
               color="primary"
@@ -262,12 +268,11 @@ const App = () => {
                 {snackbar.message}
               </Alert>
             </Snackbar>
-          </div>
+          </>
         ) : (
-          <div>
-            <button onClick={() => auth.signinRedirect()}>Sign in</button>
-            <button onClick={() => signOutRedirect()}>Sign out</button>
-          </div>
+          <Button variant="contained" color="primary" onClick={() => auth.signinRedirect()}>
+            Sign In
+          </Button>
         )}
       </Container>
     </ThemeProvider>
