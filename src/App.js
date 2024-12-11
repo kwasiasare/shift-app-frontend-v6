@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ShiftForm from "./components/ShiftForm";
 import ShiftTable from "./components/ShiftTable";
 import {
@@ -54,19 +55,17 @@ const App = () => {
   });
 
   // Handle OAuth redirect callback
-  // Handle OAuth redirect callback
   useEffect(() => {
     if (location.search.includes("code=") || location.hash.includes("id_token")) {
       auth
-        .signinRedirectCallback() // Use signinRedirectCallback
+        .signinRedirectCallback()
         .then(() => {
-          // ...
+          console.log("Redirect callback processed successfully.");
+          navigate("/dashboard");
         })
         .catch((error) => {
-          // ...
+          console.error("Error handling redirect callback:", error);
         });
-    } else if (auth.isAuthenticated) {
-      navigate("/dashboard");
     }
   }, [auth, location, navigate]);
 
@@ -102,8 +101,10 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    readShiftsFromAPI();
-  }, [readShiftsFromAPI]);
+    if (auth.isAuthenticated) {
+      readShiftsFromAPI();
+    }
+  }, [auth, readShiftsFromAPI]);
 
   const handleAddShift = async (newShift) => {
     const tempId = Date.now();
@@ -207,6 +208,7 @@ const App = () => {
   }
 
   return (
+  <Router>
     <ThemeProvider theme={theme}>
       <Container>
         <Typography variant="h4" align="center" gutterBottom>
@@ -276,6 +278,7 @@ const App = () => {
         )}
       </Container>
     </ThemeProvider>
+  </Router>
   );
 };
 
