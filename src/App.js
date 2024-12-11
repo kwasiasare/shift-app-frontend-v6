@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import ShiftForm from "./components/ShiftForm";
 import ShiftTable from "./components/ShiftTable";
 import {
@@ -208,7 +208,6 @@ const App = () => {
   }
 
   return (
-  <Router>
     <ThemeProvider theme={theme}>
       <Container>
         <Typography variant="h4" align="center" gutterBottom>
@@ -278,7 +277,6 @@ const App = () => {
         )}
       </Container>
     </ThemeProvider>
-  </Router>
   );
 };
 
