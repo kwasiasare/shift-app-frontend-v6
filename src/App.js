@@ -17,6 +17,21 @@ import {
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import "./App.css";
 import { readShifts, createShift, updateShift, deleteShift } from "./api";
+import { Amplify } from 'aws-amplify';
+import { withAuthenticator } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
+import config from './amplifyconfiguration.json';
+
+Amplify.configure(config);
+
+function App({ signOut, user }) {
+  return (
+    <>
+      <h1>Hello {user.username}</h1>
+      <button onClick={signOut}>Sign out</button>
+    </>
+  );
+}
 
 // Custom theme
 const theme = createTheme({
@@ -227,5 +242,5 @@ const App = () => {
 
 
 
+export default withAuthenticator(App);
 
-export default App;

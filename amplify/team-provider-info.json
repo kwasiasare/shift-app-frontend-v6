@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-shiftappfrontendv6-dev-8b18c-authRole",
+      "UnauthRoleArn": "arn:aws:iam::211125674700:role/amplify-shiftappfrontendv6-dev-8b18c-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::211125674700:role/amplify-shiftappfrontendv6-dev-8b18c-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-shiftappfrontendv6-dev-8b18c-deployment",
+      "UnauthRoleName": "amplify-shiftappfrontendv6-dev-8b18c-unauthRole",
+      "StackName": "amplify-shiftappfrontendv6-dev-8b18c",
+      "StackId": "arn:aws:cloudformation:us-east-1:211125674700:stack/amplify-shiftappfrontendv6-dev-8b18c/9b3fe890-b861-11ef-ba8d-128e56d487b9",
+      "AmplifyAppId": "d1s1sm76mqzi0a"
+    },
+    "categories": {
+      "auth": {
+        "shiftappfrontendv6dac7676b": {}
+      }
+    }
+  }
+}
