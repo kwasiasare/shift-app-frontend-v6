@@ -24,15 +24,6 @@ import config from './amplifyconfiguration.json';
 
 Amplify.configure(config);
 
-function App({ signOut, user }) {
-  return (
-    <>
-      <h1>Hello {user.username}</h1>
-      <button onClick={signOut}>Sign out</button>
-    </>
-  );
-}
-
 // Custom theme
 const theme = createTheme({
   palette: {
@@ -43,7 +34,7 @@ const theme = createTheme({
   typography: { fontFamily: "Roboto, sans-serif" },
 });
 
-const App = () => {
+const App = ({signOut, user}) => {
   const [shifts, setShifts] = useState([]);
   const [currentShift, setCurrentShift] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -185,6 +176,12 @@ const App = () => {
         <Typography variant="h4" align="center" gutterBottom>
           Shift Management
         </Typography>
+        <Typography variant="h6" align="center">
+          Welcome, {user.username}!
+        </Typography>
+        <Button onClick={signOut} variant="outlined" style={{ marginBottom: "16px" }}>
+          Sign Out
+        </Button>
         <Button
           variant="contained"
           color="primary"
@@ -201,11 +198,17 @@ const App = () => {
             onUpdateShift={handleUpdateShift}
           />
         )}
-        <ShiftTable
-          shifts={shifts}
-          onEdit={handleEditShift}
-          onDelete={handleDeleteShift}
-        />
+        {shifts.length === 0 ? (
+          <Typography align="center" variant="h6">
+            No shifts available. Add a new shift to get started!
+          </Typography>
+        ) : (
+          <ShiftTable
+            shifts={shifts}
+            onEdit={handleEditShift}
+            onDelete={handleDeleteShift}
+          />
+        )}
         <Dialog open={isDialogOpen} onClose={cancelDelete}>
           <DialogTitle>Confirm Delete</DialogTitle>
           <DialogContent>
@@ -223,16 +226,16 @@ const App = () => {
           </DialogActions>
         </Dialog>
         <Snackbar
-          open={snackbar.open} // Controls visibility
-          autoHideDuration={3000} // Closes automatically after 3 seconds
-          onClose={closeSnackbar} // Close event handler
+          open={snackbar.open}
+          autoHideDuration={3000}
+          onClose={closeSnackbar}
         >
           <Alert
-            onClose={closeSnackbar} // Close alert manually
-            severity={snackbar.severity} // Type of message ('success', 'error', etc.)
-            sx={{ width: "100%" }} // Full-width styling
+            onClose={closeSnackbar}
+            severity={snackbar.severity}
+            sx={{ width: "100%" }}
           >
-            {snackbar.message} 
+            {snackbar.message}
           </Alert>
         </Snackbar>
       </Container>
@@ -240,7 +243,4 @@ const App = () => {
   );
 };
 
-
-
 export default withAuthenticator(App);
-
