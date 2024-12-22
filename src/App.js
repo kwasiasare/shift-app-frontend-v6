@@ -45,6 +45,8 @@ const App = () => {
   const [deleteId, setDeleteId] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isFormVisible, setFormVisible] = useState(false);
+  const [callbackProcessed, setCallbackProcessed] = useState(false);
+
 
   // Snackbar state
   const [snackbar, setSnackbar] = useState({
@@ -55,24 +57,22 @@ const App = () => {
 
   // Handle OAuth redirect callback
   useEffect(() => {
-    if (location.search.includes("code=") || location.hash.includes("id_token")) {
-      const handleCallback = async () => {
-        try {
-          await auth.signinRedirectCallback();
+    if (!callbackProcessed && (location.search.includes("code=") || location.hash.includes("id_token"))) {
+      setCallbackProcessed(true); // Prevent re-triggering
+      auth
+        .signinRedirect()
+        .then(() => {
           console.log("Redirect callback processed successfully.");
-          navigate("/dashboard");
-        } catch (error) {
+          navigate("/");
+        })
+        .catch((error) => {
           console.error("Error handling redirect callback:", error);
-        }
-      };
-  
-      handleCallback();
+        });
     } else if (auth.isAuthenticated) {
-      navigate("/dashboard");
+      navigate("/");
     }
-  }, [auth, location, navigate]);
-
-
+  }, [auth, location, navigate, callbackProcessed]);
+  
   const signOutRedirect = () => {
     const clientId = "3ds755bcao4d6morouahs6p16l";
     const logoutUri = "https://dev-env.d35xgk4ok41v85.amplifyapp.com";
