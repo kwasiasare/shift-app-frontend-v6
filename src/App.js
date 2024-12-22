@@ -57,7 +57,7 @@ const App = () => {
   useEffect(() => {
     if (location.search.includes("code=") || location.hash.includes("id_token")) {
       auth
-        .signinRedirectCallback()
+        .signinRedirect()
         .then(() => {
           console.log("Redirect callback processed successfully.");
           navigate("/dashboard"); // Redirect to the desired route
