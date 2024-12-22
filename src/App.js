@@ -56,15 +56,17 @@ const App = () => {
   // Handle OAuth redirect callback
   useEffect(() => {
     if (location.search.includes("code=") || location.hash.includes("id_token")) {
-      auth
-        .signinRedirectCallback()
-        .then(() => {
+      const handleCallback = async () => {
+        try {
+          await auth.signinRedirectCallback();
           console.log("Redirect callback processed successfully.");
-          navigate("/dashboard"); // Redirect to the desired route
-        })
-        .catch((error) => {
+          navigate("/dashboard");
+        } catch (error) {
           console.error("Error handling redirect callback:", error);
-        });
+        }
+      };
+  
+      handleCallback();
     } else if (auth.isAuthenticated) {
       navigate("/dashboard");
     }
