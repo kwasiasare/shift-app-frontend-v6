@@ -63,7 +63,7 @@ const App = () => {
         .signinRedirect()
         .then(() => {
           console.log("Redirect callback processed successfully.");
-          navigate("/");
+          navigate("/dashboard"); // Redirect to the desired route
         })
         .catch((error) => {
           console.error("Error handling redirect callback:", error);
