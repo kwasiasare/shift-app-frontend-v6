@@ -60,13 +60,13 @@ const App = () => {
         .signinRedirect()
         .then(() => {
           console.log("Redirect callback processed successfully.");
-          navigate("/dashboard"); // Redirect to the desired route
+          navigate("/"); // Redirect to the desired route
         })
         .catch((error) => {
           console.error("Error handling redirect callback:", error);
         });
     } else if (auth.isAuthenticated) {
-      navigate("/dashboard");
+      navigate("/");
     }
   }, [auth, location, navigate]);
 
