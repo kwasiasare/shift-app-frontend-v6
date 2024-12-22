@@ -69,6 +69,7 @@ const App = () => {
           console.error("Error handling redirect callback:", error);
         });
     } else if (auth.isAuthenticated && !callbackProcessed) {
+      setCallbackProcessed(true); // Prevent re-triggering
       navigate("/");
     }
   }, [auth, location, navigate, callbackProcessed]);
