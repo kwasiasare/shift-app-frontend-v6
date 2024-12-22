@@ -57,7 +57,7 @@ const App = () => {
   useEffect(() => {
     if (location.search.includes("code=") || location.hash.includes("id_token")) {
       auth
-        .handleCallback()
+        .signinRedirectCallback()
         .then(() => {
           console.log("Redirect callback processed successfully.");
           navigate("/dashboard"); // Redirect to the desired route
@@ -76,7 +76,7 @@ const App = () => {
     const logoutUri = "https://dev-env.d35xgk4ok41v85.amplifyapp.com";
     const cognitoDomain = "https://us-east-1h0xvcwevw.auth.us-east-1.amazoncognito.com";
     window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(
-      logoutUri,
+      logoutUri
     )}`;
   };
 
