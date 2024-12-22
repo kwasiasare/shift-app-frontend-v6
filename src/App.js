@@ -68,7 +68,7 @@ const App = () => {
         .catch((error) => {
           console.error("Error handling redirect callback:", error);
         });
-    } else if (auth.isAuthenticated) {
+    } else if (auth.isAuthenticated && !callbackProcessed) {
       navigate("/");
     }
   }, [auth, location, navigate, callbackProcessed]);
