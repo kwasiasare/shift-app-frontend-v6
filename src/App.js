@@ -45,7 +45,7 @@ const App = () => {
   const [deleteId, setDeleteId] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isFormVisible, setFormVisible] = useState(false);
-  const [callbackProcessed, setCallbackProcessed] = useState(false);
+  const [callbackProcessed, setCallbackProcessed] = useState(0);
 
 
   // Snackbar state
@@ -55,24 +55,43 @@ const App = () => {
     severity: "success",
   });
 
+
+  //function ProtectedRoute({ children }) {
+    //const isAuthenticated = checkAuthStatus();
+    
+    //if (!isAuthenticated) {
+      //return <Navigate to="/login" />;
+    //}
+    
+    //return children;
+  //}
+  
   // Handle OAuth redirect callback
   useEffect(() => {
-    if (!callbackProcessed && (location.search.includes("code=") || location.hash.includes("id_token"))) {
-      setCallbackProcessed(true); // Prevent re-triggering
-      auth
-        .signinRedirect()
-        .then(() => {
-          console.log("Redirect callback processed successfully.");
-          navigate("/"); // Redirect to the desired route
-        })
-        .catch((error) => {
-          console.error("Error handling redirect callback:", error);
-        });
-    } else if (auth.isAuthenticated && !callbackProcessed) {
-      setCallbackProcessed(true); // Prevent re-triggering
-      navigate("/");
+    if (redirectCount > 5) {
+      console.error("Too many redirects");
+      // Handle error, perhaps show an error page
+      return;
     }
-  }, [auth, location, navigate, callbackProcessed]);
+  
+    if (!callbackProcessed) {
+      if (location.search.includes("code=") || location.hash.includes("id_token")) {
+        setCallbackProcessed(true);
+        auth.signinRedirect()
+          .then(() => {
+            console.log("Redirect callback processed successfully.");
+            navigate("/dashboard");
+          })
+          .catch((error) => {
+            console.error("Error handling redirect callback:", error);
+          });
+      } else if (auth.isAuthenticated) {
+        setCallbackProcessed(true);
+        navigate("/");
+      }
+    }
+  }, [auth, location, navigate, callbackProcessed, redirectCount]);
+  
   
   const signOutRedirect = () => {
     const clientId = "3ds755bcao4d6morouahs6p16l";
