@@ -45,7 +45,9 @@ const App = () => {
   const [deleteId, setDeleteId] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isFormVisible, setFormVisible] = useState(false);
-  const [callbackProcessed, setCallbackProcessed] = useState(0);
+  const [callbackProcessed, setCallbackProcessed] = useState(false);
+  const [redirectCount, setRedirectCount] = useState(0);
+
 
 
   // Snackbar state
@@ -70,27 +72,30 @@ const App = () => {
   useEffect(() => {
     if (redirectCount > 5) {
       console.error("Too many redirects");
-      // Handle error, perhaps show an error page
       return;
     }
   
     if (!callbackProcessed) {
       if (location.search.includes("code=") || location.hash.includes("id_token")) {
         setCallbackProcessed(true);
+        setRedirectCount((prev) => prev + 1); // Increment redirect count
         auth.signinRedirect()
           .then(() => {
             console.log("Redirect callback processed successfully.");
-            navigate("/dashboard");
+            navigate("/dashboard"); // Redirect to dashboard after callback
           })
           .catch((error) => {
             console.error("Error handling redirect callback:", error);
           });
-      } else if (auth.isAuthenticated) {
+      } else if (auth.isAuthenticated && !callbackProcessed) {
         setCallbackProcessed(true);
-        navigate("/");
+        if (location.pathname !== "/") {
+          navigate("/"); // Redirect only if not already on the target route
+        }
       }
     }
-  }, [auth, location, navigate, callbackProcessed, redirectCount]);
+  }, [auth, location.search, location.hash, location.pathname, navigate, callbackProcessed, redirectCount]);
+  
   
   
   const signOutRedirect = () => {
