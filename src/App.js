@@ -45,10 +45,8 @@ const App = () => {
   const [deleteId, setDeleteId] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isFormVisible, setFormVisible] = useState(false);
-  const [callbackProcessed, setCallbackProcessed] = useState(false);
-  const [redirectCount, setRedirectCount] = useState(0);
-
-
+  //const [callbackProcessed, setCallbackProcessed] = useState(false);
+  //const [redirectCount, setRedirectCount] = useState(0);
 
   // Snackbar state
   const [snackbar, setSnackbar] = useState({
@@ -69,33 +67,6 @@ const App = () => {
   //}
   
   // Handle OAuth redirect callback
-  useEffect(() => {
-    if (redirectCount > 5) {
-      console.error("Too many redirects");
-      return;
-    }
-  
-    if (!callbackProcessed) {
-      if (location.search.includes("code=") || location.hash.includes("id_token")) {
-        setCallbackProcessed(true);
-        setRedirectCount((prev) => prev + 1); // Increment redirect count
-        auth.signinRedirect()
-          .then(() => {
-            console.log("Redirect callback processed successfully.");
-            navigate("/dashboard"); // Redirect to dashboard after callback
-          })
-          .catch((error) => {
-            console.error("Error handling redirect callback:", error);
-          });
-      } else if (auth.isAuthenticated && !callbackProcessed) {
-        setCallbackProcessed(true);
-        if (location.pathname !== "/") {
-          navigate("/"); // Redirect only if not already on the target route
-        }
-      }
-    }
-  }, [auth, location.search, location.hash, location.pathname, navigate, callbackProcessed, redirectCount]);
-  
   
   
   const signOutRedirect = () => {
@@ -224,6 +195,24 @@ const App = () => {
       setCurrentShift(null);
     }
   };
+
+  useEffect(() => {
+    // Handle the authentication callback only once
+    const handleCallback = async () => {
+      if (location.search.includes("code=") || location.hash.includes("id_token")) {
+        try {
+          await auth.signinRedirectCallback(); 
+          console.log("Redirect callback processed successfully.");
+          navigate("/dashboard"); 
+        } catch (error) {
+          console.error("Error handling redirect callback:", error);
+        }
+      }
+    };
+
+    handleCallback(); 
+  }, [auth, location.search, location.hash, navigate]);
+
 
   if (auth.isLoading) {
     return <div>Loading...</div>;
