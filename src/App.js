@@ -23,6 +23,8 @@ import {
 } from "./api";
 import { useAuth } from "react-oidc-context";
 import { useNavigate, useLocation } from "react-router-dom";
+import LogoutPage from "./src/LogoutPage"; // Import the LogoutPage component
+import { Route, Routes } from "react-router-dom"; // Import routing components
 
 // Custom theme
 const theme = createTheme({
@@ -224,6 +226,11 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
+      <Routes>
+        {/* Main application route */}
+        <Route
+          path="/"
+          element={
       <Container>
         <Typography variant="h4" align="center" gutterBottom>
           Shift Management
@@ -291,7 +298,12 @@ const App = () => {
           </Button>
         )}
       </Container>
-    </ThemeProvider>
+     }
+     />
+     {/* Logout route */}
+     <Route path="/logout" element={<LogoutPage />} />
+   </Routes>
+ </ThemeProvider>  
   );
 };
 
