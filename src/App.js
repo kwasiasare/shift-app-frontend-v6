@@ -203,7 +203,7 @@ const App = () => {
     const handleCallback = async () => {
       if (location.search.includes("code=") || location.hash.includes("id_token")) {
         try {
-          await auth.signinRedirectCallback(); 
+          await auth.signinRedirect(); 
           console.log("Redirect callback processed successfully.");
           navigate("/dashboard"); 
         } catch (error) {
