@@ -23,7 +23,7 @@ import {
 } from "./api";
 import { useAuth } from "react-oidc-context";
 import { useNavigate, useLocation } from "react-router-dom";
-import LogoutPage from "./src/LogoutPage"; // Import the LogoutPage component
+import LogoutPage from "./logoutPage"; // Import the LogoutPage component
 import { Route, Routes } from "react-router-dom"; // Import routing components
 
 // Custom theme
