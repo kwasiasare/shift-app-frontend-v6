@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect} from "react";
 import { useAuth } from "react-oidc-context";
 import { useNavigate } from "react-router-dom";
 import { Button, Container, Typography } from "@mui/material";
@@ -7,15 +7,29 @@ const LogoutPage = () => {
   const auth = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    try {
-      await auth.signoutRedirect();
-      localStorage.removeItem("your-app-data");
-      navigate("/");
-    } catch (error) {
-      console.error("Error during logout:", error);
-    }
-  };
+  useEffect(() => {
+    const handleRedirectCallback = async () => {
+      if (auth.isLoading) {
+        // Wait for the authentication status to be resolved
+        return;
+      }
+
+      if (auth.isAuthenticated) {
+        try {
+          // User is authenticated, proceed with signout
+          await auth.signoutRedirect();
+          localStorage.removeItem("your-app-data");
+        } catch (error) {
+          console.error("Error during logout:", error);
+        }
+      } else {
+        // User is not authenticated, redirect to the home page
+        navigate("/");
+      }
+    };
+
+    handleRedirectCallback();
+  }, [auth, navigate]);
 
   return (
     <Container className="logout-container">
