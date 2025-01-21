@@ -7,6 +7,16 @@ const LogoutPage = () => {
   const auth = useAuth();
   const navigate = useNavigate();
 
+  const handleLogout = async () => {
+    try {
+      await auth.signoutRedirect();
+      localStorage.removeItem("your-app-data");
+      navigate("/");
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
+  
   useEffect(() => {
     const handleRedirectCallback = async () => {
       if (auth.isLoading) {
