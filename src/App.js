@@ -25,7 +25,7 @@ import { useAuth } from "react-oidc-context";
 import { useNavigate, useLocation } from "react-router-dom";
 import LogoutPage from "./components/LogoutPage";  // Import the LogoutPage component
 import { Route, Routes } from "react-router-dom"; // Import routing components
-import { cognitoConfig } from "./components/Config";
+import { cognitoConfig } from "./components/Config"; // Import Cognito settings
 
 // Custom theme
 const theme = createTheme({
