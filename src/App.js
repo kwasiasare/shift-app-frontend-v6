@@ -25,6 +25,7 @@ import { useAuth } from "react-oidc-context";
 import { useNavigate, useLocation } from "react-router-dom";
 import LogoutPage from "./components/LogoutPage";  // Import the LogoutPage component
 import { Route, Routes } from "react-router-dom"; // Import routing components
+import { cognitoConfig } from "./components/Config";
 
 // Custom theme
 const theme = createTheme({
@@ -72,12 +73,13 @@ const App = () => {
   
   
   const signOutRedirect = () => {
-    const clientId = "3ds755bcao4d6morouahs6p16l";
-    const logoutUri = "https://dev-env.d35xgk4ok41v85.amplifyapp.com/logout";
-    const cognitoDomain = "https://us-east-1h0xvcwevw.auth.us-east-1.amazoncognito.com";
-    window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(
-      logoutUri
-    )}`;
+    try {
+      window.location.href = `${cognitoConfig.cognitoDomain}/logout?client_id=${cognitoConfig.clientId}&logout_uri=${encodeURIComponent(
+        cognitoConfig.logoutUri
+      )}`;
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
   };
 
   // Snackbar handlers
