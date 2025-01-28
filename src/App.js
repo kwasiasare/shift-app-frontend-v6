@@ -72,15 +72,14 @@ const App = () => {
   // Handle OAuth redirect callback
   
   
-  //const signOutRedirect = () => {
-    //try {
-      //window.location.href = `${cognitoConfig.cognitoDomain}/logout?client_id=${cognitoConfig.clientId}&logout_uri=${encodeURIComponent(
-        //cognitoConfig.logoutUri
-      //)}`;
-    //} catch (error) {
-      //console.error("Error during logout:", error);
-    //}
-  //};
+  const signOutRedirect = () => {
+    const clientId = "3ds755bcao4d6morouahs6p16l";
+    const logoutUri = "https://main.d35xgk4ok41v85.amplifyapp.com/logout";
+    const cognitoDomain = "https://us-east-1h0xvcwevw.auth.us-east-1.amazoncognito.com";
+    window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(
+      logoutUri
+    )}`;
+  };
 
   // Snackbar handlers
   const showSnackbar = (message, severity = "success") => {
@@ -240,7 +239,7 @@ const App = () => {
         {auth.isAuthenticated ? ( // Conditional rendering moved inside the main component
           <>
             <Typography>Welcome, {auth.user?.profile.email}</Typography>
-            <Button variant="contained" color="primary" onClick={() => auth.signoutRedirect()}>
+            <Button variant="contained" color="primary" onClick={signOutRedirect}>
               Sign Out
             </Button>
             <Button
