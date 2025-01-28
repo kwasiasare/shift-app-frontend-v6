@@ -77,6 +77,10 @@ const App = () => {
     const logoutUri = "https://dev-env.d35xgk4ok41v85.amplifyapp.com/logout";
     const cognitoDomain = "https://us-east-1h0xvcwevw.auth.us-east-1.amazoncognito.com";
     
+    // Clear any local storage or session data
+    localStorage.clear();
+    sessionStorage.clear();
+
     // Build the complete logout URL with all required parameters
     const logoutUrl = new URL(`${cognitoDomain}/logout`);
     logoutUrl.searchParams.append('client_id', clientId);
@@ -88,22 +92,25 @@ const App = () => {
 };
 
 
-  // Handle sign out through OIDC context
-  const handleSignOut = () => {
-    try {
-      // First attempt to sign out through OIDC context
-      auth.signoutRedirect({
-        post_logout_redirect_uri: "https://dev-env.d35xgk4ok41v85.amplifyapp.com/logout"
-      }).catch(() => {
-        // If OIDC signout fails, fall back to Cognito direct logout
-        signOutRedirect();
+const handleSignOut = async () => {
+  try {
+      // Clear any application state/storage before logout
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // Navigate to logout page first
+      navigate('/logout');
+      
+      // Then attempt OIDC logout
+      await auth.signoutRedirect({
+          post_logout_redirect_uri: "https://dev-env.d35xgk4ok41v85.amplifyapp.com/logout"
       });
-    } catch (error) {
-      console.error("Logout error:", error);
+  } catch (error) {
+      console.error("OIDC logout error:", error);
       // Fall back to Cognito direct logout
       signOutRedirect();
-    }
-  };
+  }
+};
   
   
   // Snackbar handlers
