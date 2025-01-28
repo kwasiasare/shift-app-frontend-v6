@@ -18,7 +18,7 @@ const LogoutPage = () => {
   };
   
   useEffect(() => {
-    const handleRedirectCallback = async () => {
+    const handleRedirect = async () => {
       if (auth.isLoading) {
         // Wait for the authentication status to be resolved
         return;
@@ -38,7 +38,7 @@ const LogoutPage = () => {
       }
     };
 
-    handleRedirectCallback();
+    handleRedirect();
   }, [auth, navigate]);
 
   return (
