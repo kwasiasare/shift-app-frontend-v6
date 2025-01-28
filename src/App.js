@@ -208,7 +208,7 @@ const App = () => {
         try {
           await auth.signinRedirect(); 
           console.log("Redirect callback processed successfully.");
-          navigate("/"); 
+          navigate("/dashboard"); 
         } catch (error) {
           console.error("Error handling redirect callback:", error);
         }
