@@ -72,15 +72,15 @@ const App = () => {
   // Handle OAuth redirect callback
   
   
-  const signOutRedirect = () => {
-    try {
-      window.location.href = `${cognitoConfig.cognitoDomain}/logout?client_id=${cognitoConfig.clientId}&logout_uri=${encodeURIComponent(
-        cognitoConfig.logoutUri
-      )}`;
-    } catch (error) {
-      console.error("Error during logout:", error);
-    }
-  };
+  //const signOutRedirect = () => {
+    //try {
+      //window.location.href = `${cognitoConfig.cognitoDomain}/logout?client_id=${cognitoConfig.clientId}&logout_uri=${encodeURIComponent(
+        //cognitoConfig.logoutUri
+      //)}`;
+    //} catch (error) {
+      //console.error("Error during logout:", error);
+    //}
+  //};
 
   // Snackbar handlers
   const showSnackbar = (message, severity = "success") => {
@@ -240,7 +240,7 @@ const App = () => {
         {auth.isAuthenticated ? ( // Conditional rendering moved inside the main component
           <>
             <Typography>Welcome, {auth.user?.profile.email}</Typography>
-            <Button variant="contained" color="primary" onClick={signOutRedirect}>
+            <Button variant="contained" color="primary" onClick={() => auth.signoutRedirect()}>
               Sign Out
             </Button>
             <Button
