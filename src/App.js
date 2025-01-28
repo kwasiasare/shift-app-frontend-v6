@@ -26,8 +26,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import LogoutPage from "./components/LogoutPage";  // Import the LogoutPage component
 import { Route, Routes } from "react-router-dom"; // Import routing components
 import { cognitoConfig } from "./components/Cognito"; // Import Cognito session info
-import ProtectedRoute from "./components/ProtectedRoute";
-//import LoginPage from "./components/LoginPage";
 
 // Custom theme
 const theme = createTheme({
@@ -207,7 +205,7 @@ const App = () => {
     const handleCallback = async () => {
       if (location.search.includes("code=") || location.hash.includes("id_token")) {
         try {
-          await auth.signinRedirect(); 
+          await auth.signinRedirectCallback(); 
           console.log("Redirect callback processed successfully.");
           navigate("/dashboard"); 
         } catch (error) {
@@ -231,10 +229,9 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <Routes>
-       <Route path="/" element={<ProtectedRoute />}>
-       
+        {/* Main application route */}
         <Route
-         index 
+          path="/"
           element={
       <Container>
         <Typography variant="h4" align="center" gutterBottom>
@@ -305,8 +302,7 @@ const App = () => {
       </Container>
      }
      />
-     </Route>
-    
+     {/* Logout route */}
      <Route path="/logout" element={<LogoutPage />} />
    </Routes>
  </ThemeProvider>  

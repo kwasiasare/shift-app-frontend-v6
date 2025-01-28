@@ -11,7 +11,7 @@ const LogoutPage = () => {
     try {
       await auth.signoutRedirect();
       localStorage.removeItem("your-app-data");
-      navigate("/dashboard");
+      navigate("/");
     } catch (error) {
       console.error("Error during logout:", error);
     }
@@ -34,7 +34,7 @@ const LogoutPage = () => {
         }
       } else {
         // User is not authenticated, redirect to the home page
-        navigate("/dashboard");
+        navigate("/");
       }
     };
 
