@@ -26,7 +26,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import LogoutPage from "./components/LogoutPage";  // Import the LogoutPage component
 import { Route, Routes } from "react-router-dom"; // Import routing components
 import { cognitoConfig } from "./components/Cognito"; // Import Cognito session info
-import { ProtectedRoute } from "./components/ProtectedRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Custom theme
 const theme = createTheme({
