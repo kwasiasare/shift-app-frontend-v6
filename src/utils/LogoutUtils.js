@@ -41,3 +41,5 @@ const COGNITO_CONFIG = {
       window.location.href = buildLogoutUrl();
     }
   };
+
+  export default LogoutUtils;
