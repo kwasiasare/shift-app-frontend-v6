@@ -25,7 +25,7 @@ import { useAuth } from "react-oidc-context";
 import { useNavigate, useLocation } from "react-router-dom";
 import LogoutPage from "./components/LogoutPage";  // Import the LogoutPage component
 import { Route, Routes } from "react-router-dom"; // Import routing components
-import { cognitoConfig } from "./components/Cognito"; // Import Cognito session info
+//import { cognitoConfig } from "./components/Cognito"; // Import Cognito session info
 
 // Custom theme
 const theme = createTheme({
@@ -76,11 +76,36 @@ const App = () => {
     const clientId = "3ds755bcao4d6morouahs6p16l";
     const logoutUri = "https://dev-env.d35xgk4ok41v85.amplifyapp.com/logout";
     const cognitoDomain = "https://us-east-1h0xvcwevw.auth.us-east-1.amazoncognito.com";
-    window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(
-      logoutUri
-    )}`;
-  };
+    
+    // Build the complete logout URL with all required parameters
+    const logoutUrl = new URL(`${cognitoDomain}/logout`);
+    logoutUrl.searchParams.append('client_id', clientId);
+    logoutUrl.searchParams.append('logout_uri', logoutUri);
+    logoutUrl.searchParams.append('response_type', 'code');
 
+    // Redirect to the logout URL
+    window.location.href = logoutUrl.toString();
+};
+
+
+  // Handle sign out through OIDC context
+  const handleSignOut = () => {
+    try {
+      // First attempt to sign out through OIDC context
+      auth.signoutRedirect({
+        post_logout_redirect_uri: "https://dev-env.d35xgk4ok41v85.amplifyapp.com/logout"
+      }).catch(() => {
+        // If OIDC signout fails, fall back to Cognito direct logout
+        signOutRedirect();
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Fall back to Cognito direct logout
+      signOutRedirect();
+    }
+  };
+  
+  
   // Snackbar handlers
   const showSnackbar = (message, severity = "success") => {
     setSnackbar({ open: true, message, severity });
@@ -228,7 +253,6 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <Routes>
-        {/* Main application route */}
         <Route
           path="/"
           element={
@@ -239,7 +263,7 @@ const App = () => {
         {auth.isAuthenticated ? ( // Conditional rendering moved inside the main component
           <>
             <Typography>Welcome, {auth.user?.profile.email}</Typography>
-            <Button variant="contained" color="primary" onClick={signOutRedirect}>
+            <Button variant="contained" color="primary" onClick={handleSignOut}>
               Sign Out
             </Button>
             <Button
