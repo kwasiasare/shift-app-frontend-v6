@@ -25,7 +25,8 @@ import { useAuth } from "react-oidc-context";
 import { useNavigate, useLocation } from "react-router-dom";
 import LogoutPage from "./components/LogoutPage";  // Import the LogoutPage component
 import { Route, Routes } from "react-router-dom"; // Import routing components
-import { buildLogoutUrl, clearStorageData } from './utils/logoutUtils';
+//import { buildLogoutUrl, clearStorageData } from './utils/logoutUtils';
+import { handleLogout } from './utils/logoutUtils';
 //import { cognitoConfig } from "./components/Cognito"; // Import Cognito session info
 
 // Custom theme
@@ -94,32 +95,9 @@ const App = () => {
 
 
 const handleSignOut = async () => {
-  try {
-    // Navigate to logout page first
-    navigate('/logout');
-    
-    // Clear application state
-    localStorage.clear();
-    sessionStorage.clear();
-    
-    // Additional cleanup if needed
-    if (auth.isAuthenticated) {
-      try {
-        await auth.removeUser();
-      } catch (error) {
-        console.warn('Error removing user:', error);
-      }
-    }
-  } catch (error) {
-    console.error('Sign out error:', error);
-    // Fallback to direct Cognito logout
-    const logoutUrl = new URL(`${COGNITO_CONFIG.domain}/logout`);
-    logoutUrl.searchParams.set('client_id', COGNITO_CONFIG.clientId);
-    logoutUrl.searchParams.set('logout_uri', `${COGNITO_CONFIG.appUri}/logout`);
-    logoutUrl.searchParams.set('response_type', 'code');
-    window.location.href = logoutUrl.toString();
-  }
+  await handleLogout(auth, navigate);
 };
+
   
   
   // Snackbar handlers
