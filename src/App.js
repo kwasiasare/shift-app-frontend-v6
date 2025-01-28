@@ -95,9 +95,23 @@ const App = () => {
 
 
 const handleSignOut = async () => {
-  await handleLogout(auth, navigate);
+  try {
+    await handleLogout(auth, navigate);
+  } catch (error) {
+    console.error('Sign out error:', error);
+    // Fallback to direct logout
+    const cognitoDomain = "https://us-east-1h0xvcwevw.auth.us-east-1.amazoncognito.com";
+    const clientId = "3ds755bcao4d6morouahs6p16l";
+    const logoutUri = "https://dev-env.d35xgk4ok41v85.amplifyapp.com/logout";
+    
+    const logoutUrl = new URL(`${cognitoDomain}/logout`);
+    logoutUrl.searchParams.append('client_id', clientId);
+    logoutUrl.searchParams.append('logout_uri', logoutUri);
+    logoutUrl.searchParams.append('response_type', 'code');
+    
+    window.location.href = logoutUrl.toString();
+  }
 };
-
   
   
   // Snackbar handlers
