@@ -42,4 +42,4 @@ const COGNITO_CONFIG = {
     }
   };
 
-  export default LogoutUtils;
+  export default handleLogout;
