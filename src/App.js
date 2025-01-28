@@ -27,6 +27,7 @@ import LogoutPage from "./components/LogoutPage";  // Import the LogoutPage comp
 import { Route, Routes } from "react-router-dom"; // Import routing components
 import { cognitoConfig } from "./components/Cognito"; // Import Cognito session info
 import ProtectedRoute from "./components/ProtectedRoute";
+import LoginPage from "./components/LoginPage";
 
 // Custom theme
 const theme = createTheme({
@@ -305,6 +306,7 @@ const App = () => {
      }
      />
      </Route>
+     <Route path="/login" element={<LoginPage />} />
      <Route path="/logout" element={<LogoutPage />} />
    </Routes>
  </ThemeProvider>  
