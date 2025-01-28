@@ -25,6 +25,7 @@ import { useAuth } from "react-oidc-context";
 import { useNavigate, useLocation } from "react-router-dom";
 import LogoutPage from "./components/LogoutPage";  // Import the LogoutPage component
 import { Route, Routes } from "react-router-dom"; // Import routing components
+import { buildLogoutUrl, clearStorageData } from './utils/logoutUtils';
 //import { cognitoConfig } from "./components/Cognito"; // Import Cognito session info
 
 // Custom theme
@@ -94,21 +95,29 @@ const App = () => {
 
 const handleSignOut = async () => {
   try {
-      // Clear any application state/storage before logout
-      localStorage.clear();
-      sessionStorage.clear();
-      
-      // Navigate to logout page first
-      navigate('/logout');
-      
-      // Then attempt OIDC logout
-      await auth.signoutRedirect({
-          post_logout_redirect_uri: "https://dev-env.d35xgk4ok41v85.amplifyapp.com/logout"
-      });
+    // Navigate to logout page first
+    navigate('/logout');
+    
+    // Clear application state
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    // Additional cleanup if needed
+    if (auth.isAuthenticated) {
+      try {
+        await auth.removeUser();
+      } catch (error) {
+        console.warn('Error removing user:', error);
+      }
+    }
   } catch (error) {
-      console.error("OIDC logout error:", error);
-      // Fall back to Cognito direct logout
-      signOutRedirect();
+    console.error('Sign out error:', error);
+    // Fallback to direct Cognito logout
+    const logoutUrl = new URL(`${COGNITO_CONFIG.domain}/logout`);
+    logoutUrl.searchParams.set('client_id', COGNITO_CONFIG.clientId);
+    logoutUrl.searchParams.set('logout_uri', `${COGNITO_CONFIG.appUri}/logout`);
+    logoutUrl.searchParams.set('response_type', 'code');
+    window.location.href = logoutUrl.toString();
   }
 };
   
